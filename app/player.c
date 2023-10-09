@@ -50,8 +50,20 @@ void _print_stat_bar(char *label, int current, int max, char *color)
         else
             printf("-");
     }
-    printf("\033[0m"); // Reset color
-    printf(" %d/%d\n", current, max);
+    printf("\033[0m %d/%d\n", current, max);
+}
+
+/**
+ * Prints the player's health, mana, and gold stats.
+ *
+ * @param player A pointer to the Player struct containing the player's stats.
+ */
+void print_player_stats(Player *player)
+{
+    printf("\033[3;0H");
+    _print_stat_bar("Health", player->current_health, player->max_health, "\033[0;31m");
+    _print_stat_bar("  Mana", player->current_mana, player->max_mana, "\033[0;34m");
+    printf("  Gold \033[0;33m%d\033[0m\n", player->gold);
 }
 
 /**
@@ -73,19 +85,6 @@ void print_player()
         printf("%s", line);
     }
     printf("\n\n");
-}
-
-/**
- * Prints the player's health, mana, and gold stats.
- *
- * @param player A pointer to the Player struct containing the player's stats.
- */
-void print_player_stats(Player *player)
-{
-    printf("\033[3;0H");
-    _print_stat_bar("Health", player->current_health, player->max_health, "\033[0;31m");
-    _print_stat_bar("  Mana", player->current_mana, player->max_mana, "\033[0;34m");
-    printf("  Gold \033[0;33m%d\033[0m\n", player->gold);
 }
 
 #endif // PLAYER

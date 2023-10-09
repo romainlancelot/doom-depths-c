@@ -45,6 +45,7 @@ void display_title()
  */
 void display_menu()
 {
+    printf("\033[J"); // Clear the screen from the current line to the bottom
     printf("1 - Attack\n");
     printf("2 - Use healing potion (20)\n");
     printf("3 - Inventory\n\n");
@@ -67,7 +68,6 @@ int main()
     {
         print_player_stats(player);
         print_player();
-        printf("\033[J");
         display_menu();
 
         if (read(STDIN_FILENO, &user_input, 1) == 1)

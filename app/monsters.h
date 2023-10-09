@@ -1,7 +1,8 @@
 typedef struct
 {
     char *name;
-    int health;
+    int current_health;
+    int max_health;
     int min_attack;
     int max_attack;
     int defense;

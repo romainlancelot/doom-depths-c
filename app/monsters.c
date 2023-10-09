@@ -25,7 +25,8 @@ Monster *create_monster(char *name, int health, int min_attack, int max_attack, 
     monster->name = malloc(sizeof(char) * (strlen(name) + 1));
     strcpy(monster->name, name);
 
-    monster->health = health;
+    monster->current_health = health;
+    monster->max_health = health;
     monster->min_attack = min_attack;
     monster->max_attack = max_attack;
     monster->defense = defense;
@@ -66,17 +67,21 @@ void destroy_monsters(Monster **monsters, int count)
     }
 }
 
+/**
+ * Prints a list of monsters with their names and health status and get user choice.
+ *
+ * @param monsters An array of pointers to Monster structs.
+ * @param count The number of monsters in the array.
+ */
 void print_monsters_list(Monster **monsters, int count)
 {
     printf("\033[31;H\033[J");
-    fflush(stdout);
     int i = 0;
     for (; i < count; i++)
     {
-        printf("%d - %s\n", i + 1, monsters[i]->name);
+        printf("%d - %s (%d/%d)\n", i + 1, monsters[i]->name, monsters[i]->current_health, monsters[i]->max_health);
     }
-    printf("\n%d - Back\033[J", i + 1);
-    fflush(stdout);
+    printf("\n%d - Back", i + 1);
 
     int user_input;
     while (true)

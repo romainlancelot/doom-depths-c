@@ -1,6 +1,6 @@
 <h1>Doomsdepths</h1>
 
-Project made for the ESGI C pool. This is the remake of the game DoomsDepths in C.
+Project made for the ESGI C pool. This is the remake of the game Doomdepths in C.
 
 <img src="https://media.tenor.com/BIdLVTMDhbcAAAAC/nelliel-bleach.gif" width="100%">
 
@@ -26,3 +26,5 @@ you@debian:~$ make && ./prog
 ```
 
 <h1>Thanks for reading and playing our game</h1>
+
+<img src="https://media.tenor.com/xVvOi8dFvh0AAAAC/goodbye-my-friends.gif" width="100%">

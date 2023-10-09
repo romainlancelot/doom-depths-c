@@ -8,6 +8,7 @@ int main()
     {
         printf("%s\n", monsters[i]->name);
     }
+    scanf("%*s");
     printf("Hello, World!");
     return 0;
 }

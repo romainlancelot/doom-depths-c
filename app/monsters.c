@@ -6,6 +6,16 @@
 #if !defined(MONSTERS)
 #define MONSTERS
 
+/**
+ * Creates a new monster with the given attributes.
+ *
+ * @param name The name of the monster.
+ * @param health The health of the monster.
+ * @param min_attack The minimum attack damage of the monster.
+ * @param max_attack The maximum attack damage of the monster.
+ * @param defense The defense of the monster.
+ * @return A pointer to the newly created monster.
+ */
 Monster *create_monster(char *name, int health, int min_attack, int max_attack, int defense)
 {
     Monster *monster = malloc(sizeof(Monster));
@@ -39,6 +49,12 @@ Monster **create_random_monster(int count)
     return monsters;
 }
 
+/**
+ * Frees the memory allocated for an array of Monster pointers and their names.
+ *
+ * @param monsters The array of Monster pointers to be freed.
+ * @param count The number of Monster pointers in the array.
+ */
 void destroy_monsters(Monster **monsters, int count)
 {
     for (int i = 0; i < count; i++)

@@ -50,7 +50,7 @@ void display_menu()
     printf("2 - Use healing potion (20)\n");
     printf("3 - Inventory\n\n");
     printf("8 - End turn\n\n");
-    printf("0. Quit\n");
+    printf("0 - Quit game\n");
 }
 
 int main()
@@ -59,7 +59,7 @@ int main()
     pthread_t tid;
     pthread_create(&tid, NULL, display_title, NULL);
 
-    Monster **monsters = create_random_monster(4);
+    Monsters *monsters = create_random_monster(4);
     Player *player = create_player();
     bool show_menu = true;
 
@@ -75,7 +75,7 @@ int main()
             switch (user_input)
             {
             case '1':
-                print_monsters_list(monsters, 4);
+                print_monsters_list(monsters);
                 break;
             case 2:
                 break;

@@ -37,10 +37,10 @@ Monster *create_monster(char *name, int health, int min_attack, int max_attack, 
  * Creates an array of random monsters with the given count.
  *
  * @param count The number of monsters to create.
- * @return An array of pointers to the created monsters.
+ * @return A pointer to the newly created Monsters struct.
  * @note The created monsters have random names, health, attack, defense, and speed.
  */
-Monster **create_random_monster(int count)
+Monsters *create_random_monster(int count)
 {
     char *names[] = {"Goblin", "Orc", "Troll", "Dragon", "Giant", "Golem", "Ghoul"};
     Monster **monsters = malloc(sizeof(Monster *) * count);
@@ -49,46 +49,54 @@ Monster **create_random_monster(int count)
         char *name = names[rand() % 7];
         monsters[i] = create_monster(name, rand() % 100, rand() % 10, rand() % 20, rand() % 10);
     }
-    return monsters;
+
+    Monsters *monsters_list = malloc(sizeof(Monsters));
+    monsters_list->monsters = monsters;
+    monsters_list->count = count;
+    return monsters_list;
 }
 
 /**
  * Frees the memory allocated for an array of Monster pointers and their names.
  *
- * @param monsters The array of Monster pointers to be freed.
+ * @param monsters The Monsters struct to free.
  * @param count The number of Monster pointers in the array.
  */
-void destroy_monsters(Monster **monsters, int count)
+void destroy_monsters(Monsters *monsters)
 {
-    for (int i = 0; i < count; i++)
+    for (int i = 0; i < monsters->count; i++)
     {
-        free(monsters[i]->name);
-        free(monsters[i]);
+        free(monsters->monsters[i]->name);
+        free(monsters->monsters[i]);
     }
+    free(monsters->monsters);
+    free(monsters);
 }
 
 /**
  * Prints a list of monsters with their names and health status and get user choice.
  *
- * @param monsters An array of pointers to Monster structs.
+ * @param monsters The object containing the array of monsters.
  * @param count The number of monsters in the array.
  */
-void print_monsters_list(Monster **monsters, int count)
+void print_monsters_list(Monsters *monsters)
 {
     printf("\033[31;H\033[J");
-    int i = 0;
-    for (; i < count; i++)
+    for (int i = 0; i < monsters->count; i++)
     {
-        printf("%d - %s (%d/%d)\n", i + 1, monsters[i]->name, monsters[i]->current_health, monsters[i]->max_health);
+        char *name = monsters->monsters[i]->name;
+        int health = monsters->monsters[i]->current_health;
+        int max_health = monsters->monsters[i]->max_health;
+        printf("%d - %s (%d/%d)\n", i + 1, name, health, max_health);
     }
-    printf("\n%d - Back", i + 1);
+    printf("\n%d - Back", monsters->count + 1);
 
     int user_input;
     while (true)
     {
         if (read(STDIN_FILENO, &user_input, 1) == 1)
         {
-            if (user_input == '0' + i + 1)
+            if (user_input == '0' + monsters->count + 1)
                 break;
         }
     }

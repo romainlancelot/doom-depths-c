@@ -55,6 +55,27 @@ void _print_stat_bar(char *label, int current, int max, char *color)
 }
 
 /**
+ * This function prints the ASCII art of the player by reading from the "resources/player.txt" file.
+ * If the file cannot be opened, the function prints an error message and exits the program with status code 1.
+ */
+void print_player()
+{
+    FILE *file = fopen("resources/player.txt", "r");
+    if (file == NULL)
+    {
+        printf("Error opening player ASCII file!\n");
+        exit(1);
+    }
+    printf("\033[20;H");
+    char line[256];
+    while (fgets(line, sizeof(line), file))
+    {
+        printf("%s", line);
+    }
+    printf("\n\n");
+}
+
+/**
  * Prints the player's health, mana, and gold stats.
  *
  * @param player A pointer to the Player struct containing the player's stats.

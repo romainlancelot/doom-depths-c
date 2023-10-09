@@ -3,6 +3,7 @@
 #include <termios.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <stdbool.h>
 #include "monsters.h"
 #include "player.h"
 
@@ -32,11 +33,23 @@ void display_title()
         struct tm *timeinfo;
         time(&rawtime);
         timeinfo = localtime(&rawtime);
-        printf("\033[0;0HDoomdepths - %02d:%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
-        printf("\033[7;0H");
+        printf("\033[HDoomdepths - %02d:%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+        printf("\033[38;H");
         fflush(stdout);
         sleep(1);
     }
+}
+
+/**
+ * Displays the game menu with options for the player to choose from.
+ */
+void display_menu()
+{
+    printf("1 - Attack\n");
+    printf("2 - Use healing potion (20)\n");
+    printf("3 - Inventory\n\n");
+    printf("8 - End turn\n\n");
+    printf("0. Quit\n");
 }
 
 int main()
@@ -45,24 +58,36 @@ int main()
     pthread_t tid;
     pthread_create(&tid, NULL, display_title, NULL);
 
-    Monster **monsters = create_random_monster(10);
+    Monster **monsters = create_random_monster(4);
     Player *player = create_player();
+    bool show_menu = true;
 
     char user_input;
-    while (1)
+    while (player->current_health > 0)
     {
-
         print_player_stats(player);
+        print_player();
+        printf("\033[J");
+        display_menu();
+
         if (read(STDIN_FILENO, &user_input, 1) == 1)
         {
-            if (user_input == 'q')
+            switch (user_input)
             {
+            case '1':
+                print_monsters_list(monsters, 4);
                 break;
+            case 2:
+                break;
+            case '0':
+                goto end;
             }
-            printf("Vous avez appuyé sur : %c\n", user_input);
         }
     }
 
+end:
+    printf("\nQuitting game, thanks for playing !\n");
+    free(player);
     pthread_cancel(tid);
     pthread_join(tid, NULL);
 

@@ -11,3 +11,4 @@ typedef struct
 } Player;
 Player *create_player();
 void print_player_stats(Player *player);
+void print_player();

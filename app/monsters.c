@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
+#include <stdbool.h>
 #include "monsters.h"
 
 #if !defined(MONSTERS)
@@ -61,6 +63,29 @@ void destroy_monsters(Monster **monsters, int count)
     {
         free(monsters[i]->name);
         free(monsters[i]);
+    }
+}
+
+void print_monsters_list(Monster **monsters, int count)
+{
+    printf("\033[31;H\033[J");
+    fflush(stdout);
+    int i = 0;
+    for (; i < count; i++)
+    {
+        printf("%d - %s\n", i + 1, monsters[i]->name);
+    }
+    printf("\n%d - Back\033[J", i + 1);
+    fflush(stdout);
+
+    int user_input;
+    while (true)
+    {
+        if (read(STDIN_FILENO, &user_input, 1) == 1)
+        {
+            if (user_input == '0' + i + 1)
+                break;
+        }
     }
 }
 

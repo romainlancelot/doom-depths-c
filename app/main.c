@@ -6,7 +6,10 @@
 #include "monsters.h"
 #include "player.h"
 
-struct termios setup_terminal()
+/**
+ * Sets up the terminal by clearing it and modifying its attributes.
+ */
+void setup_terminal()
 {
     system("clear"); // Clear the terminal
     struct termios original;
@@ -15,11 +18,13 @@ struct termios setup_terminal()
     struct termios modified = original;
     modified.c_lflag &= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &modified);
-
-    return original;
 }
 
-void *display_title()
+/**
+ * Displays the title of the game along with the current time in hours, minutes, and seconds.
+ * The function runs indefinitely until the program is terminated.
+ */
+void display_title()
 {
     while (1)
     {
@@ -28,6 +33,7 @@ void *display_title()
         time(&rawtime);
         timeinfo = localtime(&rawtime);
         printf("\033[0;0HDoomdepths - %02d:%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+        printf("\033[7;0H");
         fflush(stdout);
         sleep(1);
     }
@@ -36,30 +42,24 @@ void *display_title()
 int main()
 {
     setup_terminal();
-    Monster **monsters = create_random_monster(10);
-
-    time_t last_update_time = time(NULL);
-    time_t rawtime;
-    struct tm *timeinfo;
-
-    Player *player = create_player();
-
     pthread_t tid;
     pthread_create(&tid, NULL, display_title, NULL);
 
-    char ch;
+    Monster **monsters = create_random_monster(10);
+    Player *player = create_player();
+
+    char user_input;
     while (1)
     {
-        time(&rawtime);
-        timeinfo = localtime(&rawtime);
+
         print_player_stats(player);
-        if (read(STDIN_FILENO, &ch, 1) == 1)
+        if (read(STDIN_FILENO, &user_input, 1) == 1)
         {
-            if (ch == 'q')
+            if (user_input == 'q')
             {
                 break;
             }
-            printf("Vous avez appuyé sur : %c\n", ch);
+            printf("Vous avez appuyé sur : %c\n", user_input);
         }
     }
 

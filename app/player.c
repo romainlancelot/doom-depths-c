@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "player.h"
+#include "headers.h"
 
 #if !defined(PLAYER)
 #define PLAYER
@@ -51,7 +52,7 @@ void _print_stat_bar(char *label, int current, int max, char *color)
         else
             printf("-");
     }
-    printf("\033[0m %d/%d\n", current, max);
+    printf("\e[0m %d/%d\n", current, max);
 }
 
 /**
@@ -61,10 +62,10 @@ void _print_stat_bar(char *label, int current, int max, char *color)
  */
 void print_player_stats(Player *player)
 {
-    printf("\033[3;0H");
-    _print_stat_bar("Health", player->current_health, player->max_health, "\033[0;31m");
-    _print_stat_bar("  Mana", player->current_mana, player->max_mana, "\033[0;34m");
-    printf("  Gold \033[0;33m%d\033[0m\n", player->gold);
+    GOTO_STATS;
+    _print_stat_bar("Health", player->current_health, player->max_health, "\e[0;31m");
+    _print_stat_bar("  Mana", player->current_mana, player->max_mana, "\e[0;34m");
+    printf("  Gold \e[0;33m%d\e[0m\n", player->gold);
 }
 
 /**

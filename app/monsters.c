@@ -109,10 +109,14 @@ void manage_player_attack(Monsters *monsters, Player *player)
         if (read(STDIN_FILENO, &user_input, 1) == 1)
         {
             GOTO_LOG;
-            int choice = atoi(&user_input);
-            if (choice == monsters->count + 1)
+            // if (choice == monsters->count + 1)
+            //     return;
+            // if (choice < 1 || choice > monsters->count)
+            //     continue;
+
+            if (user_input == '0' + monsters->count + 1)
                 return;
-            if (choice < 1 || choice > monsters->count)
+            else if (user_input < '1' || user_input > '0' + monsters->count)
                 continue;
             else
             {
@@ -120,9 +124,10 @@ void manage_player_attack(Monsters *monsters, Player *player)
                 if (player->attack_left == 0)
                 {
                     printf("You have no attack left !");
-                    continue;
+                    return;
                 }
                 // Attacks the selected monster.
+                int choice = atoi(&user_input);
                 attack_monster(monsters->monsters[choice - 1], player);
                 break;
             }

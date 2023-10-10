@@ -1,13 +1,14 @@
 EXE=prog
 CC=gcc
 
-$(EXE): main.o monsters.o player.o
+$(EXE): main.o monsters.o player.o start_menu.o
 	$(CC) -o $@ $^ -lpthread
 	rm -rf *.o
 
 main.o: main.c
 monsters.o: monsters.c monsters.h
 player.o: player.c player.h
+start_menu.o: start_menu.c start_menu.h
 
 %.o: %.c %.h
 	$(CC) -c $<

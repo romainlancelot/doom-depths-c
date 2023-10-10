@@ -1,0 +1,1 @@
+bool handle_start_menu();

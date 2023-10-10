@@ -7,6 +7,7 @@
 #include "player.h"
 #include "monsters.h"
 #include "headers.h"
+#include "start_menu.h"
 
 #define ATTACK_NUMBER 3
 
@@ -37,7 +38,7 @@ void display_title()
         struct tm *timeinfo;
         time(&rawtime);
         timeinfo = localtime(&rawtime);
-        printf("\e[HDoomdepths - %02d:%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+        printf("\e[1HDoomdepths - %02d:%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
         RESTORE_CURSOR;
         fflush(stdout);
         sleep(1);
@@ -64,6 +65,12 @@ int main()
     pthread_t tid;
     pthread_create(&tid, NULL, display_title, NULL);
     srand(time(NULL));
+
+    if (!handle_start_menu())
+    {
+        printf("\nQuitting game, thanks for playing !\n");
+        return 0;
+    }
 
     Monsters *monsters = create_random_monster(4);
     Player *player = create_player();

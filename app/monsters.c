@@ -92,7 +92,6 @@ void print_monsters_list(Monsters *monsters)
         printf("%d - %s (%d/%d)\n", i + 1, name, health, max_health);
     }
     printf("\n%d - Back\n", monsters->count + 1);
-    fflush(stdout);
 }
 
 /**

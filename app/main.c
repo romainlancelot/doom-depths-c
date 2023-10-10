@@ -79,7 +79,6 @@ int main()
             print_entities = false;
         }
         display_menu(player);
-        fflush(stdout);
 
         if (read(STDIN_FILENO, &user_input, 1) == 1)
         {

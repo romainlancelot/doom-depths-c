@@ -4,8 +4,11 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <stdbool.h>
-#include "monsters.h"
 #include "player.h"
+#include "monsters.h"
+#include "headers.h"
+
+#define ATTACK_NUMBER 3
 
 /**
  * Sets up the terminal by clearing it and modifying its attributes.
@@ -27,14 +30,15 @@ void setup_terminal()
  */
 void display_title()
 {
-    while (1)
+    for (;;)
     {
+        SAVE_CURSOR;
         time_t rawtime;
         struct tm *timeinfo;
         time(&rawtime);
         timeinfo = localtime(&rawtime);
-        printf("\033[HDoomdepths - %02d:%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
-        printf("\033[38;H");
+        printf("\e[HDoomdepths - %02d:%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+        RESTORE_CURSOR;
         fflush(stdout);
         sleep(1);
     }
@@ -43,10 +47,11 @@ void display_title()
 /**
  * Displays the game menu with options for the player to choose from.
  */
-void display_menu()
+void display_menu(Player *player)
 {
-    printf("\033[J"); // Clear the screen from the current line to the bottom
-    printf("1 - Attack\n");
+    CLEAR_MENU;
+    printf("What do you want to do ?\n\n");
+    printf("1 - Attack (%d/%d)\n", player->attack_left, ATTACK_NUMBER);
     printf("2 - Use healing potion (20)\n");
     printf("3 - Inventory\n\n");
     printf("8 - End turn\n\n");
@@ -58,24 +63,32 @@ int main()
     setup_terminal();
     pthread_t tid;
     pthread_create(&tid, NULL, display_title, NULL);
+    srand(time(NULL));
 
     Monsters *monsters = create_random_monster(4);
     Player *player = create_player();
-    bool show_menu = true;
+    bool print_entities = true;
 
     char user_input;
     while (player->current_health > 0)
     {
         print_player_stats(player);
-        print_player();
-        display_menu();
+        if (print_entities)
+        {
+            print_player();
+            print_entities = false;
+        }
+        display_menu(player);
+        fflush(stdout);
 
         if (read(STDIN_FILENO, &user_input, 1) == 1)
         {
             switch (user_input)
             {
             case '1':
+                CLEAR_MENU;
                 print_monsters_list(monsters);
+                manage_player_attack(monsters, player);
                 break;
             case 2:
                 break;

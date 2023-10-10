@@ -3,7 +3,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include "player.h"
 #include "monsters.h"
+#include "headers.h"
 
 #if !defined(MONSTERS)
 #define MONSTERS
@@ -81,7 +83,7 @@ void destroy_monsters(Monsters *monsters)
  */
 void print_monsters_list(Monsters *monsters)
 {
-    printf("\033[31;H\033[J");
+    printf("Choose a monster to attack:\n\n");
     for (int i = 0; i < monsters->count; i++)
     {
         char *name = monsters->monsters[i]->name;
@@ -89,17 +91,63 @@ void print_monsters_list(Monsters *monsters)
         int max_health = monsters->monsters[i]->max_health;
         printf("%d - %s (%d/%d)\n", i + 1, name, health, max_health);
     }
-    printf("\n%d - Back", monsters->count + 1);
+    printf("\n%d - Back\n", monsters->count + 1);
+    fflush(stdout);
+}
 
-    int user_input;
+/**
+ * Manages the player's attack on monsters.
+ *
+ * @param monsters The Monsters struct containing the array of monsters.
+ * @param player The Player struct containing the player's information.
+ */
+void manage_player_attack(Monsters *monsters, Player *player)
+{
+    // Reads user input to select a monster to attack.
+    char user_input;
     while (true)
     {
         if (read(STDIN_FILENO, &user_input, 1) == 1)
         {
-            if (user_input == '0' + monsters->count + 1)
+            GOTO_LOG;
+            int choice = atoi(&user_input);
+            if (choice == monsters->count + 1)
+                return;
+            if (choice < 1 || choice > monsters->count)
+                continue;
+            else
+            {
+                // Checks if the player has any attack left.
+                if (player->attack_left == 0)
+                {
+                    printf("You have no attack left !");
+                    continue;
+                }
+                // Attacks the selected monster.
+                attack_monster(monsters->monsters[choice - 1], player);
                 break;
+            }
         }
     }
+}
+
+/**
+ * Attacks a monster with a random amount of damage based on the player's attack power.
+ * The damage is then reduced by the monster's defense and subtracted from the monster's current health.
+ * The player's attack count is also decremented by 1.
+ *
+ * @param monster A pointer to the monster being attacked.
+ * @param player A pointer to the player attacking the monster.
+ */
+void attack_monster(Monster *monster, Player *player)
+{
+    int damage = rand() % (player->attack_power + 1);
+    int total_damage = damage - monster->defense;
+    if (total_damage < 0)
+        total_damage = 0;
+    monster->current_health -= total_damage;
+    player->attack_left--;
+    printf("You dealt %d damage to %s !", total_damage, monster->name);
 }
 
 #endif // MONSTERS

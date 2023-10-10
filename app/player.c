@@ -23,10 +23,11 @@ Player *create_player()
     player->max_mana = 100;
 
     // Stats
-    player->attack_power = 10;
+    player->attack_power = 20;
     player->experience = 0;
     player->level = 1;
     player->gold = 0;
+    player->attack_left = 3;
     return player;
 }
 

@@ -8,6 +8,7 @@ typedef struct
     int experience;
     int level;
     int attack_power;
+    int attack_left;
 } Player;
 Player *create_player();
 void print_player_stats(Player *player);

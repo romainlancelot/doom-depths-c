@@ -5,7 +5,9 @@
 typedef struct {
     char *name;
     int health;
+    int maxHealth;
     int attack;
+    int damage;
     int defense;
 } Monster;
 

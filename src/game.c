@@ -6,7 +6,7 @@
 
 
 int startGame() {
-    // srand(time(NULL));
+    srand(time(NULL));
 
     Player *player = createRandomPlayer();
     

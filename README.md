@@ -18,8 +18,8 @@ To begin with you need to install something to compile a C program on your compu
   The default version of GCC available in the Ubuntu 18.04 repositories is 7.4.0:
   ```sh
   # output
-  gcc (Ubuntu 7.4.0-1ubuntu1~18.04) 7.4.0
-  Copyright (C) 2017 Free Software Foundation, Inc.
+  gcc (Ubuntu 12.3.0-1ubuntu1~23.04) 12.3.0
+  Copyright (C) 2022 Free Software Foundation, Inc.
   This is free software; see the source for copying conditions.  There is NO
   warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   ```

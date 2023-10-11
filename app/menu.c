@@ -23,50 +23,60 @@ void _print_menu(char *filename)
     {
         printf("%s", line);
     }
-    printf("\n\n\n1 - %s\n0 - Quit game\n", (strstr(filename, "logo") != NULL) ? "Start game" : "Go to main menu");
 }
 
 /**
- * @brief Handles the start menu and waits for user input.
+ * Handles user input from the command line.
+ *
+ * @return true if the screen should be cleared, false if the program should exit.
+ */
+bool handle_user_input()
+{
+    char user_input;
+    if (read(STDIN_FILENO, &user_input, 1) == 1)
+    {
+        switch (user_input)
+        {
+        case '1':
+            CLEAR_SCREEN;
+            return true;
+        case '0':
+            return false;
+        }
+    }
+}
+
+/**
+ * Handles the start menu and waits for user input.
  *
  * @return true if user selects option 1, false if user selects option 0.
  */
 bool handle_start_menu()
 {
     _print_menu("resources/logo.txt");
-    char user_input;
-    while (true)
-    {
-        if (read(STDIN_FILENO, &user_input, 1) == 1)
-        {
-            switch (user_input)
-            {
-            case '1':
-                CLEAR_SCREEN;
-                return true;
-            case '0':
-                return false;
-            }
-        }
-    }
+    printf("\n\n\n1 - Start game\n0 - Quit game\n");
+    return handle_user_input();
 }
 
+/**
+ * Handles the death menu.
+ *
+ * @return true if the user chooses to restart the game, false if the user chooses to quit the game.
+ */
 bool handle_death_menu()
 {
     _print_menu("resources/dead.txt");
-    char user_input;
-    while (true)
-    {
-        if (read(STDIN_FILENO, &user_input, 1) == 1)
-        {
-            switch (user_input)
-            {
-            case '1':
-                CLEAR_SCREEN;
-                return true;
-            case '0':
-                return false;
-            }
-        }
-    }
+    printf("\n\n\n1 - Restart game\n0 - Quit game\n");
+    return handle_user_input();
+}
+
+/**
+ * Handles the win state of the game by printing the win menu and prompting the user for input.
+ * @return true if the user chooses to take loot and go to the next room, false if the user chooses to quit.
+ */
+bool handle_win_menu()
+{
+    _print_menu("resources/win.txt");
+    printf("\n\n\n1 - Take loot and go to next room\n0 - Quit\n");
+    return handle_user_input();
 }

@@ -28,8 +28,8 @@ int startGame() {
 	} while (getchar() != '\n');
 
     while (player->health > 0) {
-        CLEAR_SCREEN;
         if (player->attack == 0) {
+            CLEAR_SCREEN;
             displayHealth(player);
             printf("\n");
             for (int i = 0; i < monsterCount; i++) {
@@ -55,6 +55,7 @@ int startGame() {
             } while (getchar() != '\n');
             player->attack = player->maxAttack;
         }
+        CLEAR_SCREEN;
         displayHealth(player);
         printf("Player attack: %d/%d\n", player->attack, player->maxAttack);
         printf("\n");

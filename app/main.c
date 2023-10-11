@@ -6,8 +6,9 @@
 #include <stdbool.h>
 #include "monsters.h"
 #include "player.h"
+#include "attack.h"
 #include "headers.h"
-#include "start_menu.h"
+#include "menu.h"
 
 #define ATTACK_NUMBER 3
 
@@ -66,6 +67,7 @@ int main()
     pthread_create(&tid, NULL, display_title, NULL);
     srand(time(NULL));
 
+game:
     if (!handle_start_menu())
     {
         printf("\nQuitting game, thanks for playing !\n");
@@ -96,7 +98,27 @@ int main()
                 print_monsters_list(monsters);
                 manage_player_attack(monsters, player);
                 break;
-            case 2:
+            case '2':
+                break;
+            case '8':
+                for (int i = 0; i < monsters->count; i++)
+                {
+                    attack_player(player, monsters->monsters[i]);
+                    if (player->current_health <= 0)
+                    {
+                        CLEAR_SCREEN;
+                        if (handle_death_menu())
+                        {
+                            free(player);
+                            destroy_monsters(monsters);
+                            goto game;
+                        }
+                        else
+                            goto end;
+                    }
+                }
+                player->attack_left = ATTACK_NUMBER;
+                GOTO_LOG;
                 break;
             case '0':
                 goto end;

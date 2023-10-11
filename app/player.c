@@ -92,4 +92,14 @@ void print_player()
     printf("\n\n");
 }
 
+void heal_player(Player *player, int amount)
+{
+    player->current_health += amount;
+    if (player->current_health > player->max_health)
+        player->current_health = player->max_health;
+    GOTO_LOG;
+    printf("You healed yourself for %d health points !\n", amount);
+    fflush(stdout);
+}
+
 #endif // PLAYER

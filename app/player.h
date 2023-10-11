@@ -14,3 +14,4 @@ typedef struct
 Player *create_player();
 void print_player_stats(Player *player);
 void print_player();
+void heal_player(Player *player, int amount);

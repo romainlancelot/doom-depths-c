@@ -11,6 +11,8 @@
 #include "menu.h"
 
 #define ATTACK_NUMBER 3
+#define WAIT_FOR_POTION 6
+#define HEALING_AMOUNT 20
 
 /**
  * Sets up the terminal by clearing it and modifying its attributes.
@@ -49,12 +51,15 @@ void display_title()
 /**
  * Displays the game menu with options for the player to choose from.
  */
-void display_menu(Player *player)
+void display_menu(Player *player, int potion_counter)
 {
     CLEAR_MENU;
     printf("What do you want to do ?\n\n");
     printf("1 - Attack (%d/%d)\n", player->attack_left, ATTACK_NUMBER);
-    printf("2 - Use healing potion (20)\n");
+    if (potion_counter == WAIT_FOR_POTION)
+        printf("2 - Use healing potion (%d)\n", HEALING_AMOUNT);
+    else
+        printf("2 - Use healing potion (%d turns left)\n", WAIT_FOR_POTION - potion_counter);
     printf("3 - Inventory\n\n");
     printf("8 - End turn\n\n");
     printf("0 - Quit game\n");
@@ -79,6 +84,7 @@ game:
     bool print_entities = true;
 
     char user_input;
+    int potion_counter = WAIT_FOR_POTION;
     while (player->current_health > 0)
     {
         print_player_stats(player);
@@ -87,7 +93,7 @@ game:
             print_player();
             print_entities = false;
         }
-        display_menu(player);
+        display_menu(player, potion_counter);
 
         if (read(STDIN_FILENO, &user_input, 1) == 1)
         {
@@ -99,8 +105,14 @@ game:
                 manage_player_attack(monsters, player);
                 break;
             case '2':
+                if (potion_counter == WAIT_FOR_POTION)
+                {
+                    potion_counter = 0;
+                    heal_player(player, HEALING_AMOUNT);
+                }
                 break;
             case '8':
+                (potion_counter == WAIT_FOR_POTION) ? NULL : potion_counter++;
                 for (int i = 0; i < monsters->count; i++)
                 {
                     attack_player(player, monsters->monsters[i]);

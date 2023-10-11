@@ -128,11 +128,37 @@ void manage_player_attack(Monsters *monsters, Player *player)
                 }
                 // Attacks the selected monster.
                 int choice = atoi(&user_input);
-                attack_monster(monsters->monsters[choice - 1], player);
+                Monster *monster = monsters->monsters[choice - 1];
+                attack_monster(monster, player);
+                if (monster->current_health <= 0)
+                    _remove_monster(monsters, monster);
                 break;
             }
         }
     }
+}
+
+/**
+ * Removes a monster from the list of monsters and frees its memory.
+ *
+ * @param monsters The list of monsters.
+ * @param monster The monster to be removed.
+ */
+void _remove_monster(Monsters *monsters, Monster *monster)
+{
+    printf(" You killed %s !", monster->name);
+    monsters->count--;
+    Monster **alive_monsters = malloc(sizeof(Monster *) * monsters->count);
+
+    for (int i = 0, j = 0; i < monsters->count + 1; i++)
+    {
+        if (monsters->monsters[i] != monster)
+            alive_monsters[j++] = monsters->monsters[i];
+    }
+    free(monster->name);
+    free(monster);
+    free(monsters->monsters);
+    monsters->monsters = alive_monsters;
 }
 
 /**
@@ -145,7 +171,7 @@ void manage_player_attack(Monsters *monsters, Player *player)
  */
 void attack_monster(Monster *monster, Player *player)
 {
-    int damage = rand() % (player->attack_power + 1);
+    int damage = rand() % (player->attack_power + 1) + 50;
     int total_damage = damage - monster->defense;
     if (total_damage < 0)
         total_damage = 0;

@@ -4,6 +4,10 @@
 #include <unistd.h>
 #include "headers.h"
 
+/**
+ * Prints the start menu of the game, including the game's logo and options to start or quit the game.
+ * If the logo file cannot be opened, an error message is printed and the program exits.
+ */
 void _print_menu()
 {
     FILE *file = fopen("resources/logo.txt", "r");
@@ -21,6 +25,11 @@ void _print_menu()
     printf("\n\n1 - Start game\n\n0 - Quit game\n");
 }
 
+/**
+ * @brief Handles the start menu and waits for user input.
+ *
+ * @return true if user selects option 1, false if user selects option 0.
+ */
 bool handle_start_menu()
 {
     _print_menu();

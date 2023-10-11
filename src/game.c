@@ -22,16 +22,41 @@ int startGame() {
         printf("\n");
     }
 
-    // char c;
-    // printf("Press enter to continue\n");
-    // do {
-        // c = getchar();
-    // } while (c != '\n');
+    do {
+		printf("Press enter to start the game\n");
+		getchar();
+	} while (getchar() != '\n');
 
     while (player->health > 0) {
         CLEAR_SCREEN;
-        printf("Player health: %d\n", player->health);
-        printf("Player attack: %d\n", player->attack);
+        if (player->attack == 0) {
+            displayHealth(player);
+            printf("\n");
+            for (int i = 0; i < monsterCount; i++) {
+                Monster *monster = &monsterList[i];
+                int damage = monster->damage - player->defense;
+                if (damage < 0) {
+                    damage = 0;
+                }
+                printf("%s attacked you for %d damage\n", monster->name, damage);
+                player->health -= damage;
+                if (player->health < 0) {
+                    player->health = 0;
+                }
+                if (player->health == 0) {
+                    printf("You died\n");
+                    printf("\n");
+                    return 1;
+                }
+            }
+            do {
+                printf("\nPress enter to continue\n");
+                getchar();
+            } while (getchar() != '\n');
+            player->attack = player->maxAttack;
+        }
+        displayHealth(player);
+        printf("Player attack: %d/%d\n", player->attack, player->maxAttack);
         printf("\n");
 
         if (monsterCount == 0) {
@@ -40,77 +65,39 @@ int startGame() {
             return 1;
         }
         for (int i = 0; i < monsterCount; i++) {
-            printf("Monster: %s\n", monsterList[i].name);
-            printf("Health: %d\n", monsterList[i].health);
-            printf("Attack: %d\n", monsterList[i].attack);
-            printf("Defense: %d\n", monsterList[i].defense);
-            printf("\n");
+            printf("%d - %s (%d/%d)\n", i, monsterList[i].name, monsterList[i].health, monsterList[i].maxHealth);
         }
 
-        printf("1. Attack\n");
-        printf("2. Run\n");
+        printf("\n%d - Back\n", monsterCount+1);
         printf("\n");
 
         int choice;
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
-        switch (choice) {
-            case 1:
-                if (monsterCount > 0) {
-                    int randomIndex = rand() % monsterCount;
-                    Monster *monster = &monsterList[randomIndex];
-                    printf("Monster: %s\n", monster->name);
-                    printf("Health: %d\n", monster->health);
-                    printf("Attack: %d\n", monster->attack);
-                    printf("Defense: %d\n", monster->defense);
-                    printf("\n");
-
-                    int damage = player->attack - monster->defense;
-                    if (damage < 0) {
-                        damage = 0;
-                    }
-                    monster->health -= damage;
-                    if (monster->health < 0) {
-                        monster->health = 0;
-                    }
-                    printf("You dealt %d damage\n", damage);
-                    printf("\n");
-
-                    if (monster->health <= 0) {
-                        printf("You killed the monster\n");
-                        printf("\n");
-
-                        for (int i = randomIndex; i < monsterCount - 1; i++) {
-                            monsterList[i] = monsterList[i + 1];
-                        }
-                        monsterCount--;
-                    } else {
-                        damage = monster->attack - player->health;
-                        if (damage < 0) {
-                            damage = 0;
-                        }
-                        player->health -= damage;
-                        if (player->health < 0) {
-                            player->health = 0;
-                        }
-                        printf("The monster dealt %d damage\n", damage);
-                        printf("\n");
-                    }
-                } else {
-                    printf("There are no monsters\n");
-                    printf("\n");
-                }
-                break;
-            case 2:
-                printf("You ran away\n");
+        if (choice == monsterCount+1) {
+            return 1;
+        } else if (choice >= 0 && choice < monsterCount) {
+            Monster *monster = &monsterList[choice];
+            int damage = rand() % (monster->health - 15 - monster->defense + 1) + monster->defense;
+            if (damage < 0) {
+                damage = 0;
+            }
+            monster->health -= damage;
+            if (monster->health < 0) {
+                monster->health = 0;
+            }
+            if (monster->health == 0) {
+                printf("You killed the monster %s\n", monster->name);
                 printf("\n");
-                break;
-            default:
-                printf("Invalid choice\n");
-                printf("\n");
-                break;
+                monsterList[choice] = monsterList[monsterCount-1];
+                monsterCount--;
+            }
+        } else {
+            printf("Invalid choice\n");
+            printf("\n");
         }
+        removeAttack(player);
     }
 
     return 1;
@@ -126,6 +113,7 @@ void displayMenu() {
     int choice;
     printf("Enter your choice: ");
     scanf("%d", &choice);
+    printf("\n");
 
     switch (choice) {
         case 0:

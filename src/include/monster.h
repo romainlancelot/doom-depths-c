@@ -10,6 +10,8 @@ typedef struct {
 } Monster;
 
 
+extern int monsterCount;
+extern Monster *monsterList;
 extern Monster *createRandomMonster();
 
 #endif

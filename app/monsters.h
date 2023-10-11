@@ -18,4 +18,4 @@ Monster *create_monster(char *name, int health, int min_attack, int max_attack, 
 Monsters *create_random_monster(int count);
 void destroy_monsters(Monsters *monsters);
 void print_monsters_list(Monsters *monsters);
-void manage_player_attack(Monsters *monsters, Player *player);
+void remove_monster(Monsters *monsters, Monster *monster);

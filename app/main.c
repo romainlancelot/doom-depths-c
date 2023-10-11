@@ -4,8 +4,8 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <stdbool.h>
-#include "player.h"
 #include "monsters.h"
+#include "player.h"
 #include "headers.h"
 #include "start_menu.h"
 

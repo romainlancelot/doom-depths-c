@@ -13,3 +13,4 @@ typedef struct
 Player *create_player();
 void print_player_stats(Player *player);
 void print_player();
+void manage_player_attack(Monsters *monsters, Player *player);

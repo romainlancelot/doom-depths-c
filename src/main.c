@@ -4,6 +4,7 @@
 
 #include "include/display_standars.h"
 #include "include/game.h"
+#include "include/player.h"
 #include "include/monster.h"
 
 int main() {

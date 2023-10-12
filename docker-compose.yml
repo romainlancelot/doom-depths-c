@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  doomsdepths:
+    build: .
+    container_name: doomsdepths
+    volumes:
+      - ./app:/app/
+    working_dir: /app

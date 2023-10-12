@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 #include <termios.h>
 #include <unistd.h>
@@ -112,7 +113,8 @@ game:
                 }
                 break;
             case '8':
-                (potion_counter == WAIT_FOR_POTION) ? NULL : potion_counter++;
+                if (potion_counter != WAIT_FOR_POTION)
+                    potion_counter++;
                 for (int i = 0; i < monsters->count; i++)
                 {
                     attack_player(player, monsters->monsters[i]);

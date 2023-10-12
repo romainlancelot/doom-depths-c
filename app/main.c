@@ -42,7 +42,7 @@ void display_title()
         struct tm *timeinfo;
         time(&rawtime);
         timeinfo = localtime(&rawtime);
-        printf("\e[1HDoomdepths - %02d:%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+        printf("\e[1HDoomdepths - %02d:%02d:%02d", timeinfo->tm_hour + 2, timeinfo->tm_min, timeinfo->tm_sec);
         RESTORE_CURSOR;
         fflush(stdout);
         sleep(1);

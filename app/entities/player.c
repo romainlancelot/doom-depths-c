@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include "player.h"
-#include "headers.h"
+#include "../utils/headers.h"
 
 #if !defined(PLAYER)
 #define PLAYER
@@ -77,7 +77,7 @@ void print_player_stats(Player *player)
  */
 void print_player()
 {
-    FILE *file = fopen("resources/player.txt", "r");
+    FILE *file = fopen("ui/resources/player.txt", "r");
     if (file == NULL)
     {
         printf("Error opening player ASCII file!\n");

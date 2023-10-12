@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
-#include "headers.h"
+#include "../utils/headers.h"
 
 /**
  * Prints the start menu of the game, including the game's logo and options to start or quit the game.
@@ -14,6 +14,7 @@ void _print_menu(char *filename)
     FILE *file = fopen(filename, "r");
     if (file == NULL)
     {
+        printf("%s", filename);
         printf("Error opening player ASCII file!\n");
         exit(1);
     }
@@ -53,7 +54,7 @@ bool handle_user_input()
  */
 bool handle_start_menu()
 {
-    _print_menu("resources/logo.txt");
+    _print_menu("ui/resources/logo.txt");
     printf("\n\n\n1 - Start game\n0 - Quit game\n");
     return handle_user_input();
 }
@@ -65,7 +66,7 @@ bool handle_start_menu()
  */
 bool handle_death_menu()
 {
-    _print_menu("resources/dead.txt");
+    _print_menu("ui/resources/dead.txt");
     printf("\n\n\n1 - Restart game\n0 - Quit game\n");
     return handle_user_input();
 }
@@ -76,7 +77,7 @@ bool handle_death_menu()
  */
 bool handle_win_menu()
 {
-    _print_menu("resources/win.txt");
+    _print_menu("ui/resources/win.txt");
     printf("\n\n\n1 - Take loot and go to next room\n0 - Quit\n");
     return handle_user_input();
 }

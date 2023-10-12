@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include "monsters.h"
-#include "headers.h"
+#include "../utils/headers.h"
 
 #if !defined(MONSTERS)
 #define MONSTERS

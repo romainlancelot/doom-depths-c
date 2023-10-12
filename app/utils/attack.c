@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdbool.h>
-#include "monsters.h"
-#include "player.h"
+#include "../entities/monsters.h"
+#include "../entities/player.h"
 #include "attack.h"
 #include "headers.h"
 

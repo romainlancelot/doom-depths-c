@@ -5,11 +5,11 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <stdbool.h>
-#include "monsters.h"
-#include "player.h"
-#include "attack.h"
-#include "headers.h"
-#include "menu.h"
+#include "entities/monsters.h"
+#include "entities/player.h"
+#include "utils/attack.h"
+#include "utils/headers.h"
+#include "ui/menu.h"
 
 #define ATTACK_NUMBER 3
 #define WAIT_FOR_POTION 6
@@ -145,6 +145,7 @@ end:
     free(player);
     pthread_cancel(tid);
     pthread_join(tid, NULL);
+    destroy_monsters(monsters);
 
     return 0;
 }

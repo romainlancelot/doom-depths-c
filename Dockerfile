@@ -1,6 +1,6 @@
-FROM debian:latest
+FROM alpine:latest
 
 # Install dependencies
-RUN apt update && apt upgrade -y && apt install build-essential -y
+RUN apk add --no-cache bash gcc make musl-dev
 
 ENTRYPOINT tail -f

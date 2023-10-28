@@ -1,11 +1,10 @@
+#include "attack.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdbool.h>
-#include "../entities/monsters.h"
-#include "../entities/player.h"
-#include "attack.h"
-#include "headers.h"
+
 
 /**
  * Attacks a monster with a random amount of damage based on the player's attack power.
@@ -58,6 +57,7 @@ void manage_player_attack(Monsters *monsters, Player *player)
                 Monster *monster = monsters->monsters[choice - 1];
                 attack_monster(monster, player);
                 if (monster->current_health <= 0)
+                    player->gold += GOLD_ON_MONSTER_DEATH;
                     remove_monster(monsters, monster);
                 break;
             }

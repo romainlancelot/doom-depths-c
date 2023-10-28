@@ -1,12 +1,10 @@
+#include "player.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdbool.h>
-#include "player.h"
-#include "../utils/headers.h"
 
-#if !defined(PLAYER)
-#define PLAYER
 
 /**
  * Creates a new player with default values for health, mana, stats, experience, level, and gold.
@@ -101,5 +99,3 @@ void heal_player(Player *player, int amount)
     printf("You healed yourself for %d health points !\n", amount);
     fflush(stdout);
 }
-
-#endif // PLAYER

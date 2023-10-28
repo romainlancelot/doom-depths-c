@@ -5,15 +5,14 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <stdbool.h>
+
 #include "entities/monsters.h"
 #include "entities/player.h"
 #include "utils/attack.h"
 #include "utils/headers.h"
 #include "ui/menu.h"
+#include "config.h"
 
-#define ATTACK_NUMBER 3
-#define WAIT_FOR_POTION 6
-#define HEALING_AMOUNT 20
 
 /**
  * Sets up the terminal by clearing it and modifying its attributes.

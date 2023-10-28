@@ -1,9 +1,10 @@
+#include "menu.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
-#include "../utils/headers.h"
 
 /**
  * Prints the start menu of the game, including the game's logo and options to start or quit the game.

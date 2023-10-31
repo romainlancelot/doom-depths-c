@@ -10,10 +10,10 @@
  *
  * @return A pointer to the newly created player.
  */
-Player *create_player()
+Player *create_player(int id)
 {
     Player *player = malloc(sizeof(Player));
-    player->id = 1;
+    player->id = id;
 
     // Health
     player->current_health = 100;

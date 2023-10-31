@@ -78,7 +78,6 @@ int main()
     pthread_create(&tid, NULL, display_title, NULL);
     srand(time(NULL));
 
-game:
     Player *player = NULL;
     int user_choice = handle_start_menu();
     if (user_choice == 0)
@@ -87,10 +86,11 @@ game:
         return 0;
     }
     else if (user_choice == 1)
-        player = create_player();
+        player = create_player(1);
     else
         player = load_player(DB_NAME, user_choice - 1);
 
+game:
     Monsters *monsters = create_random_monster(4);
     bool print_entities = true;
 
@@ -110,31 +110,32 @@ game:
         {
             switch (user_input)
             {
-            case '1':
+            case '1': // Attack
                 CLEAR_MENU;
                 print_monsters_list(monsters);
                 manage_player_attack(monsters, player);
                 break;
-            case '2':
+            case '2': // Use potion
                 if (potion_counter == WAIT_FOR_POTION)
                 {
                     potion_counter = 0;
                     heal_player(player, HEALING_AMOUNT);
                 }
                 break;
-            case '8':
+            case '8': // End turn
                 if (potion_counter != WAIT_FOR_POTION)
                     potion_counter++;
                 for (int i = 0; i < monsters->count; i++)
                 {
                     attack_player(player, monsters->monsters[i]);
-                    if (player->current_health <= 0)
+                    if (player->current_health <= 0) // Player died
                     {
                         CLEAR_SCREEN;
                         if (handle_death_menu())
                         {
                             free(player);
                             destroy_monsters(monsters);
+                            player = create_player(player->id);
                             goto game;
                         }
                         else

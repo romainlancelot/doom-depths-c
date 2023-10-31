@@ -15,7 +15,7 @@ typedef struct
     int attack_power;
     int attack_left;
 } Player;
-Player *create_player();
+Player *create_player(int id);
 void print_player_stats(Player *player);
 void print_player();
 void heal_player(Player *player, int amount);

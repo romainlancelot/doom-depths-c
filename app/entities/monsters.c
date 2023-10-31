@@ -6,9 +6,6 @@
 #include "monsters.h"
 #include "../utils/headers.h"
 
-#if !defined(MONSTERS)
-#define MONSTERS
-
 /**
  * Creates a new monster with the given attributes.
  *
@@ -115,5 +112,3 @@ void remove_monster(Monsters *monsters, Monster *monster)
     free(monsters->monsters);
     monsters->monsters = alive_monsters;
 }
-
-#endif // MONSTERS

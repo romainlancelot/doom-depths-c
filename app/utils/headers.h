@@ -8,6 +8,4 @@
 #define RESTORE_CURSOR printf("\e8");
 #define CLEAR_SCREEN printf("\e[2H\e[J\e[H");
 
-#define SEPARATEUR printf(" -------------------------------------------- \n\n");
-
-#endif
+#endif // DEF_HEADER_DISPLAY_STANDARS

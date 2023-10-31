@@ -10,6 +10,7 @@
 #include "utils/attack.h"
 #include "utils/headers.h"
 #include "ui/menu.h"
+#include "utils/db.h"
 
 #define ATTACK_NUMBER 3
 #define WAIT_FOR_POTION 6
@@ -68,6 +69,9 @@ void display_menu(Player *player, int potion_counter)
 
 int main()
 {
+    init_database("doomdepths.sqlite3");
+    exit(0);
+
     setup_terminal();
     pthread_t tid;
     pthread_create(&tid, NULL, display_title, NULL);

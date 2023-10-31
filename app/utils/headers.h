@@ -8,4 +8,6 @@
 #define RESTORE_CURSOR printf("\e8");
 #define CLEAR_SCREEN printf("\e[2H\e[J\e[H");
 
+#define DB_NAME "db.sqlite3"
+
 #endif // DEF_HEADER_DISPLAY_STANDARS

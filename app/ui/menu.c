@@ -3,7 +3,9 @@
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
+#include "../entities/player.h"
 #include "../utils/headers.h"
+#include "../utils/db.h"
 
 /**
  * Prints the start menu of the game, including the game's logo and options to start or quit the game.
@@ -55,7 +57,9 @@ bool handle_user_input()
 bool handle_start_menu()
 {
     _print_menu("ui/resources/logo.txt");
-    printf("\n\n\n1 - Start game\n0 - Quit game\n");
+    printf("\n\n\n1 - Start game\n");
+    load_all_save(DB_NAME);
+    printf("0 - Quit game\n");
     return handle_user_input();
 }
 

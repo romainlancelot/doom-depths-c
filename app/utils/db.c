@@ -3,6 +3,7 @@
 #include <string.h>
 #include <sqlite3.h>
 #include <stdbool.h>
+#include "../entities/player.h"
 
 /**
  * Handles SQLite errors by printing the error message to stderr and exiting the program.
@@ -52,10 +53,6 @@ char *read_sql(char *sql_filename)
  */
 void init_database(char *db_name)
 {
-    // Function body
-}
-void init_database(char *db_name)
-{
     sqlite3 *db;
     char *err_msg = 0;
 
@@ -79,4 +76,79 @@ void init_database(char *db_name)
         if (rc != SQLITE_OK)
             _handle_sql_error(db, err_msg, false);
     }
+    fclose(file);
+    sqlite3_close(db);
+}
+
+void save_in_database(char *db_name, char *sql)
+{
+    sqlite3 *db;
+    char *err_msg = 0;
+
+    int rc = sqlite3_open(db_name, &db);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
+
+    rc = sqlite3_exec(db, sql, 0, 0, &err_msg);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, false);
+    sqlite3_close(db);
+}
+
+static int _load_player(Player *player, int argc, char **argv, char **azColName)
+{
+    player->current_health = atoi(argv[1]);
+    player->max_health = atoi(argv[2]);
+    player->current_mana = atoi(argv[3]);
+    player->max_mana = atoi(argv[4]);
+    player->gold = atoi(argv[5]);
+    player->experience = atoi(argv[6]);
+    player->level = atoi(argv[7]);
+    player->defense = atoi(argv[8]);
+    player->attack_power = atoi(argv[9]);
+    player->attack_left = atoi(argv[10]);
+    return 0;
+}
+
+Player *load_player(char *db_name, int id)
+{
+    sqlite3 *db;
+    char *err_msg = 0;
+    Player *player = malloc(sizeof(Player));
+
+    int rc = sqlite3_open(db_name, &db);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
+
+    char *sql = malloc(100 * sizeof(char));
+    sprintf(sql, "SELECT * FROM players WHERE id = %d", id);
+    rc = sqlite3_exec(db, sql, _load_player, player, &err_msg);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
+
+    sqlite3_close(db);
+    return player;
+}
+
+static int _load_all_save(void *data, int argc, char **argv, char **azColName)
+{
+    printf("%d - Load player level %s: health: %s/%s, mana: %s/%s, gold: %s\n", atoi(argv[0]) + 1, argv[7], argv[1], argv[2], argv[3], argv[4], argv[5]);
+    return 0;
+}
+
+void load_all_save(char *db_name)
+{
+    sqlite3 *db;
+    char *err_msg = 0;
+
+    int rc = sqlite3_open(db_name, &db);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
+
+    char *sql = malloc(100 * sizeof(char));
+    sprintf(sql, "SELECT * FROM players");
+    rc = sqlite3_exec(db, sql, _load_all_save, NULL, &err_msg);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
+    sqlite3_close(db);
 }

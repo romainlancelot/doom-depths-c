@@ -67,11 +67,12 @@ void display_menu(Player *player, int potion_counter)
     printf("0 - Quit game\n");
 }
 
+/**
+ * Main function that runs the game.
+ */
 int main()
 {
-    init_database("doomdepths.sqlite3");
-    exit(0);
-
+    init_database(DB_NAME);
     setup_terminal();
     pthread_t tid;
     pthread_create(&tid, NULL, display_title, NULL);
@@ -139,6 +140,8 @@ game:
                 GOTO_LOG;
                 break;
             case '0':
+                char *player_sql = save_player(player);
+                save_in_database(DB_NAME, player_sql);
                 goto end;
             }
         }

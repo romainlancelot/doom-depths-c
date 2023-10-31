@@ -1,2 +1,2 @@
-utils/sql/init_player.txt
+utils/sql/init_players.txt
 utils/sql/init_monsters.txt

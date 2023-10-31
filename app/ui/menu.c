@@ -47,6 +47,7 @@ int _handle_user_input()
 /**
  * Handles the start menu and waits for user input.
  *
+ * @param db The SQLite database connection.
  * @return true if user selects option 1, false if user selects option 0.
  */
 int handle_start_menu(sqlite3 *db)

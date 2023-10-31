@@ -83,7 +83,7 @@ sqlite3 *init_database(char *db_name)
 /**
  * Saves data to a SQLite database.
  *
- * @param db_name The name of the database file.
+ * @param db The SQLite database to save the data to.
  * @param sql The SQL statement to execute.
  */
 void save(sqlite3 *db, char *sql)
@@ -97,7 +97,7 @@ void save(sqlite3 *db, char *sql)
 /**
  * Updates the specified SQLite database with the given SQL statement.
  *
- * @param db_name The name of the SQLite database to update.
+ * @param db The SQLite database to update.
  * @param sql The SQL statement to execute.
  */
 void update(sqlite3 *db, char *sql)
@@ -136,7 +136,7 @@ static int _load_player(Player *player, int argc, char **argv, char **columns)
 /**
  * Loads a player from the specified database with the given id.
  *
- * @param db_name The name of the database to load the player from.
+ * @param db The SQLite database to load the player from.
  * @param id The id of the player to load.
  * @return A pointer to the loaded player.
  */
@@ -172,7 +172,7 @@ static int _load_all_save(void *data, int argc, char **argv, char **columns)
 /**
  * Loads all saved data from the specified SQLite database file.
  *
- * @param db_name The path to the SQLite database file.
+ * @param db The SQLite database to load the data from.
  */
 void load_all_save(sqlite3 *db)
 {
@@ -184,21 +184,35 @@ void load_all_save(sqlite3 *db)
         _handle_sql_error(db, err_msg, true);
 }
 
+/**
+ * @brief Callback function for loading player count from database query.
+ *
+ * @param count Pointer to integer to store player count.
+ * @param argc Number of columns in result set.
+ * @param argv Array of pointers to strings representing column data.
+ * @param columns Array of pointers to strings representing column names.
+ * @return Always returns 0.
+ */
 static int _load_player_count(int *count, int argc, char **argv, char **columns)
 {
-    *count++;
+    *count += 1;
     return 0;
 }
 
+/**
+ * @brief Gets the number of players in the database.
+ *
+ * @param db Pointer to SQLite database object.
+ * @return Number of players in the database.
+ */
 int get_player_count(sqlite3 *db)
 {
     char *err_msg = 0;
     int count = 0;
     char *sql = malloc(100 * sizeof(char));
-    sprintf(sql, "SELECT COUNT(*) FROM players");
+    sprintf(sql, "SELECT * FROM players");
     int rc = sqlite3_exec(db, sql, _load_player_count, &count, &err_msg);
     if (rc != SQLITE_OK)
         _handle_sql_error(db, err_msg, true);
-    sqlite3_close(db);
     return count;
 }

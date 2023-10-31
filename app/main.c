@@ -16,6 +16,7 @@
 #define ATTACK_NUMBER 3
 #define WAIT_FOR_POTION 6
 #define HEALING_AMOUNT 20
+#define MAX_SAVE 3
 
 /**
  * Sets up the terminal by clearing it and modifying its attributes.
@@ -80,6 +81,8 @@ int main()
     srand(time(NULL));
 
     Player *player = NULL;
+
+choice:
     int user_choice = handle_start_menu(db);
     if (user_choice == 0)
     {
@@ -87,7 +90,16 @@ int main()
         return 0;
     }
     else if (user_choice == 1)
+    {
+        int player_count = get_player_count(db);
+        if (player_count == MAX_SAVE)
+        {
+            printf("\nYou already have 3 saves, load one to continue.\n");
+            fflush(stdout);
+            goto choice;
+        }
         player = create_player(1);
+    }
     else
         player = load_player(db, user_choice - 1);
 

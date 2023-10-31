@@ -80,7 +80,22 @@ void init_database(char *db_name)
     sqlite3_close(db);
 }
 
-void save_in_database(char *db_name, char *sql)
+void save(char *db_name, char *sql)
+{
+    sqlite3 *db;
+    char *err_msg = 0;
+
+    int rc = sqlite3_open(db_name, &db);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
+
+    rc = sqlite3_exec(db, sql, 0, 0, &err_msg);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, false);
+    sqlite3_close(db);
+}
+
+void update(char *db_name, char *sql)
 {
     sqlite3 *db;
     char *err_msg = 0;
@@ -97,6 +112,7 @@ void save_in_database(char *db_name, char *sql)
 
 static int _load_player(Player *player, int argc, char **argv, char **azColName)
 {
+    player->id = atoi(argv[0]);
     player->current_health = atoi(argv[1]);
     player->max_health = atoi(argv[2]);
     player->current_mana = atoi(argv[3]);

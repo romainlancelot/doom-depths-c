@@ -79,14 +79,19 @@ int main()
     srand(time(NULL));
 
 game:
-    if (!handle_start_menu())
+    Player *player = NULL;
+    int user_choice = handle_start_menu();
+    if (user_choice == 0)
     {
         printf("\nQuitting game, thanks for playing !\n");
         return 0;
     }
+    else if (user_choice == 1)
+        player = create_player();
+    else
+        player = load_player(DB_NAME, user_choice - 1);
 
     Monsters *monsters = create_random_monster(4);
-    Player *player = create_player();
     bool print_entities = true;
 
     char user_input;
@@ -140,8 +145,10 @@ game:
                 GOTO_LOG;
                 break;
             case '0':
-                char *player_sql = save_player(player);
-                save_in_database(DB_NAME, player_sql);
+                if (user_choice == 1)
+                    save(DB_NAME, save_player(player));
+                else
+                    update(DB_NAME, update_player(player));
                 goto end;
             }
         }

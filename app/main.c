@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <stdbool.h>
+#include <sqlite3.h>
 #include "entities/monsters.h"
 #include "entities/player.h"
 #include "utils/attack.h"
@@ -72,14 +73,14 @@ void display_menu(Player *player, int potion_counter)
  */
 int main()
 {
-    init_database(DB_NAME);
+    sqlite3 *db = init_database(DB_NAME);
     setup_terminal();
     pthread_t tid;
     pthread_create(&tid, NULL, display_title, NULL);
     srand(time(NULL));
 
     Player *player = NULL;
-    int user_choice = handle_start_menu();
+    int user_choice = handle_start_menu(db);
     if (user_choice == 0)
     {
         printf("\nQuitting game, thanks for playing !\n");
@@ -88,7 +89,7 @@ int main()
     else if (user_choice == 1)
         player = create_player(1);
     else
-        player = load_player(DB_NAME, user_choice - 1);
+        player = load_player(db, user_choice - 1);
 
 game:
     Monsters *monsters = create_random_monster(4);
@@ -147,9 +148,9 @@ game:
                 break;
             case '0':
                 if (user_choice == 1)
-                    save(DB_NAME, save_player(player));
+                    save(db, save_player(player));
                 else
-                    update(DB_NAME, update_player(player));
+                    update(db, update_player(player));
                 goto end;
             }
         }

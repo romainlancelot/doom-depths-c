@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
+#include <sqlite3.h>
 #include "../entities/player.h"
 #include "../utils/headers.h"
 #include "../utils/db.h"
@@ -48,11 +49,11 @@ int _handle_user_input()
  *
  * @return true if user selects option 1, false if user selects option 0.
  */
-int handle_start_menu()
+int handle_start_menu(sqlite3 *db)
 {
     _print_menu("ui/resources/logo.txt");
     printf("\n\n\n1 - Start game\n");
-    load_all_save(DB_NAME);
+    load_all_save(db);
     printf("0 - Quit game\n");
     return _handle_user_input();
 }

@@ -51,7 +51,7 @@ char *read_sql(char *sql_filename)
  *
  * @param db_name The name of the database to be initialized.
  */
-void init_database(char *db_name)
+sqlite3 *init_database(char *db_name)
 {
     sqlite3 *db;
     char *err_msg = 0;
@@ -77,40 +77,47 @@ void init_database(char *db_name)
             _handle_sql_error(db, err_msg, false);
     }
     fclose(file);
-    sqlite3_close(db);
+    return db;
 }
 
-void save(char *db_name, char *sql)
+/**
+ * Saves data to a SQLite database.
+ *
+ * @param db_name The name of the database file.
+ * @param sql The SQL statement to execute.
+ */
+void save(sqlite3 *db, char *sql)
 {
-    sqlite3 *db;
     char *err_msg = 0;
-
-    int rc = sqlite3_open(db_name, &db);
-    if (rc != SQLITE_OK)
-        _handle_sql_error(db, err_msg, true);
-
-    rc = sqlite3_exec(db, sql, 0, 0, &err_msg);
+    int rc = sqlite3_exec(db, sql, 0, 0, &err_msg);
     if (rc != SQLITE_OK)
         _handle_sql_error(db, err_msg, false);
-    sqlite3_close(db);
 }
 
-void update(char *db_name, char *sql)
+/**
+ * Updates the specified SQLite database with the given SQL statement.
+ *
+ * @param db_name The name of the SQLite database to update.
+ * @param sql The SQL statement to execute.
+ */
+void update(sqlite3 *db, char *sql)
 {
-    sqlite3 *db;
     char *err_msg = 0;
-
-    int rc = sqlite3_open(db_name, &db);
-    if (rc != SQLITE_OK)
-        _handle_sql_error(db, err_msg, true);
-
-    rc = sqlite3_exec(db, sql, 0, 0, &err_msg);
+    int rc = sqlite3_exec(db, sql, 0, 0, &err_msg);
     if (rc != SQLITE_OK)
         _handle_sql_error(db, err_msg, false);
-    sqlite3_close(db);
 }
 
-static int _load_player(Player *player, int argc, char **argv, char **azColName)
+/**
+ * Loads player data from the database query result into a Player struct.
+ *
+ * @param player Pointer to the Player struct to load the data into.
+ * @param argc Number of columns in the query result.
+ * @param argv Array of strings containing the values of the columns in the query result.
+ * @param azColName Array of strings containing the names of the columns in the query result.
+ * @return 0 if successful.
+ */
+static int _load_player(Player *player, int argc, char **argv, char **columns)
 {
     player->id = atoi(argv[0]);
     player->current_health = atoi(argv[1]);
@@ -126,45 +133,72 @@ static int _load_player(Player *player, int argc, char **argv, char **azColName)
     return 0;
 }
 
-Player *load_player(char *db_name, int id)
+/**
+ * Loads a player from the specified database with the given id.
+ *
+ * @param db_name The name of the database to load the player from.
+ * @param id The id of the player to load.
+ * @return A pointer to the loaded player.
+ */
+Player *load_player(sqlite3 *db, int id)
 {
-    sqlite3 *db;
     char *err_msg = 0;
     Player *player = malloc(sizeof(Player));
-
-    int rc = sqlite3_open(db_name, &db);
-    if (rc != SQLITE_OK)
-        _handle_sql_error(db, err_msg, true);
-
     char *sql = malloc(100 * sizeof(char));
     sprintf(sql, "SELECT * FROM players WHERE id = %d", id);
-    rc = sqlite3_exec(db, sql, _load_player, player, &err_msg);
+    int rc = sqlite3_exec(db, sql, _load_player, player, &err_msg);
     if (rc != SQLITE_OK)
         _handle_sql_error(db, err_msg, true);
-
-    sqlite3_close(db);
     return player;
 }
 
-static int _load_all_save(void *data, int argc, char **argv, char **azColName)
+/**
+ * This function is a callback used to load all saved player data from the database.
+ * It prints the loaded player's level, health, mana, and gold to the console.
+ *
+ * @param data A pointer to user data that can be passed to the callback function.
+ * @param argc The number of arguments passed to the callback function.
+ * @param argv An array of strings containing the values of the arguments passed to the callback function.
+ * @param columns An array of strings containing the names of the columns in the result set.
+ *
+ * @return 0 to continue executing the SQL statement, or non-zero to halt execution.
+ */
+static int _load_all_save(void *data, int argc, char **argv, char **columns)
 {
     printf("%d - Load player level %s: health: %s/%s, mana: %s/%s, gold: %s\n", atoi(argv[0]) + 1, argv[7], argv[1], argv[2], argv[3], argv[4], argv[5]);
     return 0;
 }
 
-void load_all_save(char *db_name)
+/**
+ * Loads all saved data from the specified SQLite database file.
+ *
+ * @param db_name The path to the SQLite database file.
+ */
+void load_all_save(sqlite3 *db)
 {
-    sqlite3 *db;
     char *err_msg = 0;
-
-    int rc = sqlite3_open(db_name, &db);
-    if (rc != SQLITE_OK)
-        _handle_sql_error(db, err_msg, true);
-
     char *sql = malloc(100 * sizeof(char));
     sprintf(sql, "SELECT * FROM players");
-    rc = sqlite3_exec(db, sql, _load_all_save, NULL, &err_msg);
+    int rc = sqlite3_exec(db, sql, _load_all_save, NULL, &err_msg);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
+}
+
+static int _load_player_count(int *count, int argc, char **argv, char **columns)
+{
+    *count++;
+    return 0;
+}
+
+int get_player_count(sqlite3 *db)
+{
+    char *err_msg = 0;
+    int count = 0;
+    char *sql = malloc(100 * sizeof(char));
+    sprintf(sql, "SELECT COUNT(*) FROM players");
+    int rc = sqlite3_exec(db, sql, _load_player_count, &count, &err_msg);
     if (rc != SQLITE_OK)
         _handle_sql_error(db, err_msg, true);
     sqlite3_close(db);
+    return count;
 }

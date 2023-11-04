@@ -10,6 +10,7 @@
 #include "entities/player.h"
 #include "utils/attack.h"
 #include "utils/headers.h"
+#include "utils/stuff.h"
 #include "ui/menu.h"
 #include "config.h"
 
@@ -60,7 +61,8 @@ void display_menu(Player *player, int potion_counter)
         printf("2 - Use healing potion (%d)\n", HEALING_AMOUNT);
     else
         printf("2 - Use healing potion (%d turns left)\n", WAIT_FOR_POTION - potion_counter);
-    printf("3 - Inventory\n\n");
+    printf("3 - Inventory\n");
+    printf("4 - Buy stuff\n\n");
     printf("8 - End turn\n\n");
     printf("0 - Quit game\n");
 }
@@ -81,6 +83,7 @@ game:
 
     Monsters *monsters = create_random_monster(4);
     Player *player = create_player();
+    Stuff **stuff = create_stuff_list();
     bool print_entities = true;
 
     char user_input;
@@ -110,6 +113,15 @@ game:
                     potion_counter = 0;
                     heal_player(player, HEALING_AMOUNT);
                 }
+                break;
+            case '3':
+                CLEAR_MENU;
+                print_player_stuff(player);
+                break;
+            case '4':
+                CLEAR_MENU;
+                print_stuff_list(stuff);
+                buy_stuff(player, stuff);
                 break;
             case '8':
                 if (potion_counter != WAIT_FOR_POTION)

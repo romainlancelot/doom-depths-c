@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <string.h>
 
 
 /**
@@ -42,7 +43,7 @@ Player *create_player()
  * @param max The maximum value to display in the status bar.
  * @param color The color to use for the status bar.
  */
-void _print_stat_bar(char *label, int current, int max, char *color)
+void _print_stat_bar(char *label, int current, int max, char *color, bool newline)
 {
     printf("%s ", label);
     printf("%s", color); // Set color
@@ -54,7 +55,9 @@ void _print_stat_bar(char *label, int current, int max, char *color)
         else
             printf("-");
     }
-    printf("\e[0m %d/%d\n", current, max);
+    printf("\e[0m %d/%d", current, max);
+    if (newline)
+        printf("\n");
 }
 
 /**
@@ -65,8 +68,19 @@ void _print_stat_bar(char *label, int current, int max, char *color)
 void print_player_stats(Player *player)
 {
     GOTO_STATS;
-    _print_stat_bar("Health", player->current_health, player->max_health, "\e[0;31m");
-    _print_stat_bar("  Mana", player->current_mana, player->max_mana, "\e[0;34m");
+    _print_stat_bar("Health", player->current_health, player->max_health, "\e[0;31m", false);
+    if (player->stuff_count > 0)
+    {
+        for (int i = 0; i < player->stuff_count; i++)
+        {
+            if (strcmp(player->stuff[i]->name, "Shield") == 0)
+            {
+                printf(" + %d (Shield)", player->stuff[i]->defense);
+            }
+        }
+    }
+    printf("\n");
+    _print_stat_bar("  Mana", player->current_mana, player->max_mana, "\e[0;34m", true);
     printf("  Gold \e[0;33m%d\e[0m\n", player->gold);
 }
 

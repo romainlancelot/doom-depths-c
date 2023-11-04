@@ -13,6 +13,7 @@ extern void print_stuff_list(Stuff **stuff_list);
 extern void print_player_stuff(Player *player);
 extern void free_stuff(Stuff *stuff);
 extern void free_stuff_list(Stuff **stuff_list);
+extern void remove_stuff(Player *player, int index);
 extern void buy_stuff(Player *player, Stuff **stuff_list);
 
 #endif

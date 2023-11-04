@@ -89,6 +89,16 @@ void free_stuff_list(Stuff **stuff_list)
     free(stuff_list);
 }
 
+void remove_stuff(Player *player, int index)
+{
+    for (int i = index; i < player->stuff_count; i++)
+    {
+        player->stuff[i] = player->stuff[i + 1];
+    }
+    player->stuff_count--;
+    player->stuff = realloc(player->stuff, sizeof(Stuff *) * player->stuff_count);
+}
+
 void buy_stuff(Player *player, Stuff **stuff_list)
 {
     printf("Which stuff do you want to buy ?\nTo back to the menu, press 'b'\n");

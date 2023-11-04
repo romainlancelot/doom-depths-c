@@ -5,6 +5,7 @@
 #include "../config.h"
 #include "../entities/monsters.h"
 #include "../entities/player.h"
+#include "../utils/stuff.h"
 
 
 extern void attack_player(Player *player, Monster *monster);

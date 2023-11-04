@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <string.h>
 
 
 /**
@@ -71,6 +72,32 @@ void attack_player(Player *player, Monster *monster)
     int total_damage = damage;
     // if (total_damage < 0)
     //     total_damage = 0;
+    if (player->stuff_count > 0)
+    {
+        for (int i = 0; i < player->stuff_count; i++)
+        {
+            if (strcmp(player->stuff[i]->name, "Shield") == 0)
+            {
+                player->stuff[i]->health -= total_damage;
+                total_damage -= player->stuff[i]->defense;
+                SAVE_CURSOR;
+                GOTO_LOG;
+                printf("Your shield took %d damage !\n", player->stuff[i]->defense);
+                if (player->stuff[i]->health <= 0)
+                {
+                    player->stuff_count--;
+                    player->stuff[i] = NULL;
+                    remove_stuff(player, i);
+                    printf("Your shield broke !\n");
+                }
+                printf("Press any key to continue\n");
+                char user_input;
+                read(STDIN_FILENO, &user_input, 1) == 1;
+                RESTORE_CURSOR;
+                fflush(stdout);
+            }
+        }
+    }
     player->current_health -= total_damage;
     SAVE_CURSOR;
     GOTO_LOG;

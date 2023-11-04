@@ -30,6 +30,7 @@ Player *create_player()
     player->defense = 10;
     player->gold = 0;
     player->attack_left = 3;
+    player->stuff_count = 0;
     return player;
 }
 

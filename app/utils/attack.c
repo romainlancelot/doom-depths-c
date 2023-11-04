@@ -57,8 +57,8 @@ void manage_player_attack(Monsters *monsters, Player *player)
                 Monster *monster = monsters->monsters[choice - 1];
                 attack_monster(monster, player);
                 if (monster->current_health <= 0)
-                    player->gold += GOLD_ON_MONSTER_DEATH;
                     remove_monster(monsters, monster);
+                    player->gold += GOLD_ON_MONSTER_DEATH;
                 break;
             }
         }

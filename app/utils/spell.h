@@ -19,6 +19,7 @@ typedef struct
 } Spells;
 
 Spell *create_spell(char *name, int power, int mana_cost, int cooldown, Spelltype type);
+Spell *create_random_spell();
 Spells *create_base_spell_list();
 void recharge_spells(Spells *spells);
 void manage_spell_choice(Spells *spells, Monsters *monsters, Player *player);

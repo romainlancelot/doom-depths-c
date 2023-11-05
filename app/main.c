@@ -83,7 +83,7 @@ game:
     }
 
     Monsters *monsters = create_random_monster(4);
-    Spells *spells = create_base_spell_list();
+    Spells *spells = create_random_spell_list(3);
     Player *player = create_player();
     bool print_entities = true;
 

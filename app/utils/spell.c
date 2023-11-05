@@ -8,6 +8,11 @@
 #include "spell.h"
 #include "headers.h"
 
+
+char *DamageSpellName[] = {"Fireball","Ice Spike", "Rock Crumble"};
+char *DamageAoeSpellName[] = {"Meteor","Tsunami", "Earthquake"};
+char *HealSpellName[] = {"Healbeam","Spiritual Light","Holy Blessing"};
+
 /**
  * Creates a new monster with the given attributes.
  *
@@ -34,6 +39,43 @@ Spell *create_spell(char *name, int power, int mana_cost, int cooldown, Spelltyp
 }
 
 /**
+ *
+ * @return A pointer to a completely random spell
+ */
+Spell *create_random_spell()
+{
+    Spell *spell = malloc(sizeof(Spell));
+
+    int spelltype = rand() % 3;
+
+    char *name = "";
+    switch (spelltype) {
+        case 0:
+            spell->type=DAMAGE;
+            name = DamageSpellName[rand() % 3];
+            break;
+        case 1:
+            spell->type=DAMAGE_AOE;
+            name = DamageAoeSpellName[rand() % 3];
+            break;
+        case 2:
+            spell->type=HEAL;
+            name = HealSpellName[rand() % 3];
+            break;
+    }
+    spell->name = malloc(sizeof(char) * (strlen(name) + 1));
+    strcpy(spell->name, name);
+
+    int spellLevel = rand() % 40 + 10;
+    spell->power = spellLevel + rand() % 10;
+    spell->mana_cost = spellLevel/1.5 + rand() % 10;
+    int cooldown = spellLevel/5 + rand() % 10;
+    spell->cooldown = cooldown;
+    spell->recharge = cooldown;
+    return spell;
+}
+
+/**
  * Creates an array of random monsters with the given count.
  *
  * @return A pointer to the newly created Spells struct.
@@ -41,14 +83,14 @@ Spell *create_spell(char *name, int power, int mana_cost, int cooldown, Spelltyp
  */
 Spells *create_base_spell_list()
 {
-    Spell **spells = malloc(sizeof(Spell *) * 3);
+    Spell **spells = malloc(sizeof(Spell *) * 4);
     spells[0] = create_spell("Fireball", rand() % 50, rand() % 30 + 10, rand() % 15 + 1, DAMAGE);
     spells[1] = create_spell("Meteor", rand() % 50, rand() % 30 + 10, rand() % 15 + 1, DAMAGE_AOE);
     spells[2] = create_spell("Heal", rand() % 50, rand() % 30 + 10, rand() % 15 + 1, HEAL);
 
     Spells *spell_list = malloc(sizeof(Spells));
     spell_list->spells = spells;
-    spell_list->count = 3;
+    spell_list->count = 4;
     return spell_list;
 }
 
@@ -61,12 +103,10 @@ Spells *create_base_spell_list()
  */
 Spells *create_random_spell_list(int count)
 {
-    char *names[] = {"Fire", "Ice", "Heal", "Dragon", "Giant", "Golem", "Ghoul"};
     Spell **spells = malloc(sizeof(Spell *) * count);
     for (int i = 0; i < count; i++)
     {
-        char *name = names[rand() % 7];
-        spells[i] = create_spell(name, rand() % 100, rand() % 10, rand() % 20, rand() % 10);
+        spells[i] = create_random_spell();
     }
 
     Spells *spell_list = malloc(sizeof(Spells));
@@ -164,6 +204,8 @@ void manage_spell_choice(Spells *spells, Monsters *monsters, Player *player) {
  * @note Deplete player mana and do the calculation of the spell
  */
 void manage_spell_casting(Spell *spell, Monsters *monsters, Player *player){
+    GOTO_LOG;
+    printf("You used %s for %d points of mana.\n", spell->name, spell->mana_cost);
     player->current_mana -= spell->mana_cost;
     switch (spell->type) {
         case DAMAGE_AOE:

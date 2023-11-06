@@ -116,16 +116,17 @@ void remove_monster(Monsters *monsters, Monster *monster)
 char *save_monsters(Monsters *monsters, int id)
 {
     char *sql = malloc(sizeof(char) * 1000);
-    strcpy(sql, "INSERT INTO monsters (name, health, min_attack, max_attack, defense, player_id) VALUES ");
+    strcpy(sql, "INSERT INTO monsters (name, current_health, max_health, min_attack, max_attack, defense, player_id) VALUES ");
     for (int i = 0; i < monsters->count; i++)
     {
         char *name = monsters->monsters[i]->name;
-        int health = monsters->monsters[i]->current_health;
+        int current_health = monsters->monsters[i]->current_health;
+        int max_health = monsters->monsters[i]->max_health;
         int min_attack = monsters->monsters[i]->min_attack;
         int max_attack = monsters->monsters[i]->max_attack;
         int defense = monsters->monsters[i]->defense;
         char *values = malloc(sizeof(char) * 100);
-        sprintf(values, "('%s', %d, %d, %d, %d, %d)", name, health, min_attack, max_attack, defense, id);
+        sprintf(values, "('%s', %d, %d, %d, %d, %d, %d)", name, current_health, max_health, min_attack, max_attack, defense, id);
         strcat(sql, values);
         if (i < monsters->count - 1)
             strcat(sql, ", ");

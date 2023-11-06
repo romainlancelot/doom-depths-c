@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sqlite3.h>
 #include "../entities/player.h"
+#include "../entities/monsters.h"
 #include "../utils/headers.h"
 #include "../utils/db.h"
 

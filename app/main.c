@@ -81,6 +81,7 @@ int main()
     srand(time(NULL));
 
     Player *player = NULL;
+    Monsters *monsters = NULL;
 
 choice:
     int user_choice = handle_start_menu(db);
@@ -99,12 +100,15 @@ choice:
             goto choice;
         }
         player = create_player(1);
+        monsters = create_random_monster(4);
     }
     else
+    {
         player = load_player(db, user_choice - 1);
+        monsters = load_monsters(db, player->id);
+    }
 
 game:
-    Monsters *monsters = create_random_monster(4);
     bool print_entities = true;
 
     char user_input;
@@ -160,9 +164,13 @@ game:
                 break;
             case '0':
                 if (user_choice == 1)
+                {
                     save(db, save_player(player));
+                }
                 else
                     update(db, update_player(player));
+                clear_monsters(db, player->id);
+                save(db, save_monsters(monsters, player->id));
                 goto end;
             }
         }

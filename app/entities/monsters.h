@@ -22,5 +22,6 @@ Monsters *create_random_monster(int count);
 void destroy_monsters(Monsters *monsters);
 void print_monsters_list(Monsters *monsters);
 void remove_monster(Monsters *monsters, Monster *monster);
+char *save_monsters(Monsters *monsters, int id);
 
 #endif // MONSTERS

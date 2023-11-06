@@ -4,6 +4,7 @@
 #include <sqlite3.h>
 #include <stdbool.h>
 #include "../entities/player.h"
+#include "../entities/monsters.h"
 
 /**
  * Handles SQLite errors by printing the error message to stderr and exiting the program.
@@ -215,4 +216,74 @@ int get_player_count(sqlite3 *db)
     if (rc != SQLITE_OK)
         _handle_sql_error(db, err_msg, true);
     return count;
+}
+
+/**
+ * Helper function for loading a single monster from the database.
+ *
+ * @param monsters The Monsters struct to add the loaded monster to.
+ * @param argc The number of columns in the result set.
+ * @param argv The array of result values.
+ * @param columns The array of column names.
+ */
+static int _load_monster(Monsters *monsters, int argc, char **argv, char **columns)
+{
+    Monster *monster = malloc(sizeof(Monster));
+    monster->name = malloc(sizeof(char) * (strlen(argv[1]) + 1));
+    strcpy(monster->name, argv[1]);
+    monster->current_health = atoi(argv[2]);
+    monster->max_health = atoi(argv[3]);
+    monster->min_attack = atoi(argv[4]);
+    monster->max_attack = atoi(argv[5]);
+    monster->defense = atoi(argv[6]);
+    monsters->monsters[monsters->count++] = monster;
+    return 0;
+}
+
+static int _get_monsters_count(int *count, int argc, char **argv, char **columns)
+{
+    *count += 1;
+    return 0;
+}
+
+/**
+ * Loads monsters from the database for a given player id.
+ *
+ * @param db The SQLite database.
+ * @param id The player id.
+ */
+Monsters *load_monsters(sqlite3 *db, int id)
+{
+    char *err_msg = 0;
+    char *sql = malloc(100 * sizeof(char));
+
+    int count = 0;
+    sprintf(sql, "SELECT * FROM monsters WHERE player_id = %d", id);
+    int rc = sqlite3_exec(db, sql, _get_monsters_count, &count, &err_msg);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
+
+    Monsters *monsters = malloc(sizeof(Monsters));
+    monsters->count = 0;
+    monsters->monsters = malloc(sizeof(Monster *) * count);
+    rc = sqlite3_exec(db, sql, _load_monster, monsters, &err_msg);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
+    return monsters;
+}
+
+/**
+ * Clears all monsters from the database for a given player id.
+ *
+ * @param db The SQLite database.
+ * @param id The player id.
+ */
+void clear_monsters(sqlite3 *db, int id)
+{
+    char *err_msg = 0;
+    char *sql = malloc(100 * sizeof(char));
+    sprintf(sql, "DELETE FROM monsters WHERE player_id = %d", id);
+    int rc = sqlite3_exec(db, sql, NULL, NULL, &err_msg);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
 }

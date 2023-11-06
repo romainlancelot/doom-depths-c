@@ -99,8 +99,8 @@ choice:
             fflush(stdout);
             goto choice;
         }
-        player = create_player(1);
-        monsters = create_random_monster(4);
+        player = create_player(player_count + 1);
+        monsters = create_random_monster(rand() % 4 + 1);
     }
     else
     {
@@ -166,9 +166,10 @@ game:
                 if (user_choice == 1)
                 {
                     save(db, save_player(player));
+                    save(db, save_monsters(monsters, player->id));
+                    goto end;
                 }
-                else
-                    update(db, update_player(player));
+                update(db, update_player(player));
                 clear_monsters(db, player->id);
                 save(db, save_monsters(monsters, player->id));
                 goto end;

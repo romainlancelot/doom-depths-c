@@ -6,14 +6,15 @@
 #include "../entities/player.h"
 
 
-extern Stuff *create_stuff(char *name, int attack, int defense, int health, int price);
-extern Stuff **create_stuff_list();
-extern void print_stuff(Stuff *stuff);
-extern void print_stuff_list(Stuff **stuff_list);
+typedef struct {
+    Stuff **stuff;
+    int stuff_count;
+} StuffList;
+
+
+extern StuffList *create_random_stuff_list(int count);
 extern void print_player_stuff(Player *player);
-extern void free_stuff(Stuff *stuff);
-extern void free_stuff_list(Stuff **stuff_list);
 extern void remove_stuff(Player *player, int index);
-extern void buy_stuff(Player *player, Stuff **stuff_list);
+extern void buy_stuff(Player *player, StuffList *stuff_list);
 
 #endif

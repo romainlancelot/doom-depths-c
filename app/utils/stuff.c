@@ -7,45 +7,100 @@
 #include <string.h>
 
 
-Stuff *create_stuff(char *name, int attack, int defense, int health, int price)
+int stuff_attacks_count = 2;
+char *stuff_attacks_names[] = {
+    "Sword",
+    "Axe"
+};
+
+int stuff_defenses_count = 1;
+char *stuff_defenses_names[] = {
+    "Shield",
+    "Armor"
+};
+
+
+Stuff *create_stuff(StuffType type, char *name, int bonus, int price)
 {
     Stuff *stuff = malloc(sizeof(Stuff));
-    char *name_copy = malloc(sizeof(char) * (strlen(name) + 1));
-    strcpy(name_copy, name);
-    stuff->name = name_copy;
-    stuff->attack = attack;
-    stuff->defense = defense;
-    stuff->health = health;
+    stuff->name = malloc(sizeof(char) * (strlen(name) + 1));
+    strcpy(stuff->name, name);
+    stuff->bonus = bonus;
     stuff->price = price;
+    stuff->equipped = false;
+    stuff->type = type;
     return stuff;
 }
 
-Stuff **create_stuff_list()
+StuffList *create_random_stuff_list(int count)
 {
-    Stuff **stuff_list = malloc(sizeof(Stuff *) * STUFF_NUMBER);
-    stuff_list[0] = create_stuff("Sword", 10, 0, 0, 10);
-    stuff_list[1] = create_stuff("Shield", 0, 10, 0, 10);
-    stuff_list[2] = create_stuff("Potion", 0, 0, 10, 10);
-    // stuff_list[3] = create_stuff("Shield", 0, 20, 0, 20);
-    // stuff_list[4] = create_stuff("Sword", 20, 0, 0, 20);
+    StuffList *stuff_list = malloc(sizeof(StuffList));
+    if (stuff_list == NULL) {
+        return NULL;
+    }
+
+    stuff_list->stuff = malloc(sizeof(Stuff *) * count);
+    if (stuff_list->stuff == NULL) {
+        free(stuff_list);
+        return NULL;
+    }
+
+    for (int i = 0; i < count; i++)
+    {
+        int type = rand() % 2;
+        char *name;
+        int bonus;
+        int price;
+        switch (type)
+        {
+            case ATTACK:
+                name = stuff_attacks_names[rand() % stuff_attacks_count];
+                bonus = rand() % 10 + 10;
+                price = rand() % 10 + 10;
+                break;
+            case DEFENSE:
+                name = stuff_defenses_names[rand() % stuff_defenses_count];
+                bonus = rand() % 10 + 10;
+                price = rand() % 10 + 10;
+                break;
+        }
+        stuff_list->stuff[i] = create_stuff(type, name, bonus, price);
+
+        if (stuff_list->stuff[i] == NULL) {
+            for (int j = 0; j < i; j++) {
+                free(stuff_list->stuff[j]->name);
+                free(stuff_list->stuff[j]);
+            }
+            free(stuff_list->stuff);
+            free(stuff_list);
+            return NULL;
+        }
+    }
+    stuff_list->stuff_count = count;
     return stuff_list;
 }
 
 void print_stuff(Stuff *stuff)
 {
-    printf("Attack  : %6d\n", stuff->attack);
-    printf("Defense : %6d\n", stuff->defense);
-    printf("Health  : %6d\n", stuff->health);
-    printf("Price   : %6d\n", stuff->price);
-    printf("\n");
+    printf("%s : ", stuff->name);
+    switch (stuff->type)
+    {
+        case ATTACK:
+            printf("Attack + %d", stuff->bonus);
+            break;
+        case DEFENSE:
+            printf("Defense + %d", stuff->bonus);
+            break;
+    }
 }
 
-void print_stuff_list(Stuff **stuff_list)
+void print_stuff_list(StuffList *stuff_list)
 {
     for (int i = 0; i < STUFF_NUMBER; i++)
     {
-        printf("%d - %s\n", i, stuff_list[i]->name);
-        print_stuff(stuff_list[i]);
+        printf("%d - ", i);
+        print_stuff(stuff_list->stuff[i]);
+        printf("\n");
     }
 }
 
@@ -61,37 +116,38 @@ void print_player_stuff(Player *player)
 
     for (int i = 0; i < player->stuff_count; i++)
     {
-        printf("%d - %s\n", i, player->stuff[i]->name);
+        printf("%d - ", i);
         print_stuff(player->stuff[i]);
+        if (player->stuff[i]->equipped)
+        {
+            printf(" (equipped)");
+        }
+        printf("\n");
     }
 
-    printf("Press any key to back to the menu\n");
-    char user_input;
-    if (read(STDIN_FILENO, &user_input, 1) == 1)
-    {
-        GOTO_LOG;
-        printf("You backed to the menu !\n");
-    }
+    equip_stuff(player);
 }
 
-void free_stuff(Stuff *stuff)
+void destroy_stuff(Stuff *stuff)
 {
     free(stuff->name);
     free(stuff);
 }
 
-void free_stuff_list(Stuff **stuff_list)
+void destroy_stuff_list(StuffList *stuff_list)
 {
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < stuff_list->stuff_count; i++)
     {
-        free_stuff(stuff_list[i]);
+        destroy_stuff(stuff_list->stuff[i]);
     }
+    free(stuff_list->stuff);
     free(stuff_list);
 }
 
 void remove_stuff(Player *player, int index)
 {
-    for (int i = index; i < player->stuff_count; i++)
+    destroy_stuff(player->stuff[index]);
+    for (int i = index; i < player->stuff_count - 1; i++)
     {
         player->stuff[i] = player->stuff[i + 1];
     }
@@ -99,7 +155,7 @@ void remove_stuff(Player *player, int index)
     player->stuff = realloc(player->stuff, sizeof(Stuff *) * player->stuff_count);
 }
 
-void buy_stuff(Player *player, Stuff **stuff_list)
+void buy_stuff(Player *player, StuffList *stuff_list)
 {
     printf("Which stuff do you want to buy ?\nTo back to the menu, press 'b'\n");
     char user_input;
@@ -120,7 +176,7 @@ void buy_stuff(Player *player, Stuff **stuff_list)
         }
         else
         {
-            Stuff *stuff = stuff_list[stuff_index];
+            Stuff *stuff = stuff_list->stuff[stuff_index];
             if (player->gold >= stuff->price)
             {
                 player->gold -= stuff->price;
@@ -129,6 +185,7 @@ void buy_stuff(Player *player, Stuff **stuff_list)
                 player->stuff[player->stuff_count - 1] = stuff;
                 GOTO_LOG;
                 printf("You bought %s !\n", stuff->name);
+                return;
             }
             else
             {

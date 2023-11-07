@@ -68,14 +68,15 @@ void _print_stat_bar(char *label, int current, int max, char *color, bool newlin
 void print_player_stats(Player *player)
 {
     GOTO_STATS;
+    BLANK_LINE;
     _print_stat_bar("Health", player->current_health, player->max_health, "\e[0;31m", false);
     if (player->stuff_count > 0)
     {
         for (int i = 0; i < player->stuff_count; i++)
         {
-            if (strcmp(player->stuff[i]->name, "Shield") == 0)
+            if (player->stuff[i]->equipped && player->stuff[i]->type == DEFENSE)
             {
-                printf(" + %d (Shield)", player->stuff[i]->defense);
+                printf(" (%s + %d)", player->stuff[i]->name, player->stuff[i]->bonus);
             }
         }
     }
@@ -113,4 +114,40 @@ void heal_player(Player *player, int amount)
     GOTO_LOG;
     printf("You healed yourself for %d health points !\n", amount);
     fflush(stdout);
+}
+
+void equip_stuff(Player *player)
+{
+    printf("Which stuff do you want to equip ? Press any other key to cancel.\n");
+    char user_input;
+    if (read(STDIN_FILENO, &user_input, 1) == 1)
+    {
+        int choice = atoi(&user_input);
+        if (choice < 0 || choice >= player->stuff_count)
+        {
+            GOTO_LOG;
+            printf("Invalid choice !");
+            return;
+        }
+        if (player->stuff[choice]->equipped)
+        {
+            GOTO_LOG;
+            printf("This stuff is already equipped !");
+            return;
+        }
+        for (int i = 0; i < player->stuff_count; i++)
+        {
+            if (player->stuff[i]->equipped && player->stuff[i]->type == player->stuff[choice]->type)
+            {
+                player->stuff[i]->equipped = false;
+                GOTO_LOG;
+                printf("You unequipped %s. ", player->stuff[i]->name);
+                break;
+            }
+        }
+        player->stuff[choice]->equipped = true;
+        GOTO_LOG;
+        printf("You equipped %s !", player->stuff[choice]->name);
+        fflush(stdout);
+    }
 }

@@ -70,37 +70,28 @@ void attack_player(Player *player, Monster *monster)
 {
     int damage = rand() % (monster->max_attack + 1) + monster->min_attack;
     int total_damage = damage;
-    // if (total_damage < 0)
-    //     total_damage = 0;
+    SAVE_CURSOR;
+    GOTO_LOG;
     if (player->stuff_count > 0)
     {
         for (int i = 0; i < player->stuff_count; i++)
         {
-            if (strcmp(player->stuff[i]->name, "Shield") == 0)
+            if (player->stuff[i]->equipped && player->stuff[i]->type == DEFENSE)
             {
-                player->stuff[i]->health -= total_damage;
-                total_damage -= player->stuff[i]->defense;
-                SAVE_CURSOR;
-                GOTO_LOG;
-                printf("Your shield took %d damage !\n", player->stuff[i]->defense);
-                if (player->stuff[i]->health <= 0)
+                total_damage -= player->stuff[i]->bonus;
+            if (total_damage < 0)
+                    total_damage = 0;
+                printf("Your %s absorbed %d damage ! ", player->stuff[i]->name, player->stuff[i]->bonus);
+                player->stuff[i]->bonus -= damage;
+                if (player->stuff[i]->bonus <= 0)
                 {
-                    player->stuff_count--;
-                    player->stuff[i] = NULL;
+                    printf("Your %s broke. ", player->stuff[i]->name);
                     remove_stuff(player, i);
-                    printf("Your shield broke !\n");
                 }
-                printf("Press any key to continue\n");
-                char user_input;
-                read(STDIN_FILENO, &user_input, 1) == 1;
-                RESTORE_CURSOR;
-                fflush(stdout);
             }
         }
     }
     player->current_health -= total_damage;
-    SAVE_CURSOR;
-    GOTO_LOG;
     printf("%s dealt %d damage to you ! Press a key to continue", monster->name, total_damage);
     print_player_stats(player);
     RESTORE_CURSOR;

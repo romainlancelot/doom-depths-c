@@ -18,6 +18,23 @@
 void attack_monster(Monster *monster, Player *player)
 {
     int damage = rand() % (player->attack_power + 1) + 50;
+    if (player->stuff_count > 0)
+    {
+        for (int i = 0; i < player->stuff_count; i++)
+        {
+            if (player->stuff[i]->equipped && player->stuff[i]->type == ATTACK)
+            {
+                damage += player->stuff[i]->bonus;
+                printf("Your %s dealt %d damage ! ", player->stuff[i]->name, player->stuff[i]->bonus);
+                player->stuff[i]->bonus -= damage;
+                if (player->stuff[i]->bonus <= 0)
+                {
+                    printf("Your %s broke. ", player->stuff[i]->name);
+                    remove_stuff(player, i);
+                }
+            }
+        }
+    }
     int total_damage = damage - monster->defense;
     if (total_damage < 0)
         total_damage = 0;

@@ -32,7 +32,7 @@ void attack_monster(Monster *monster, Player *player)
  * @param monsters The Monsters struct containing the array of monsters.
  * @param player The Player struct containing the player's information.
  */
-void manage_player_attack(Monsters *monsters, Player *player)
+void manage_player_attack(Monsters *monsters, Player *player, bool *print_entities)
 {
     // Reads user input to select a monster to attack.
     char user_input;
@@ -58,7 +58,10 @@ void manage_player_attack(Monsters *monsters, Player *player)
                 Monster *monster = monsters->monsters[choice - 1];
                 attack_monster(monster, player);
                 if (monster->current_health <= 0)
+                {
                     remove_monster(monsters, monster);
+                    *print_entities = true;
+                }
                 break;
             }
         }

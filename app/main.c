@@ -122,7 +122,12 @@ game:
         print_player_stats(player);
         if (print_entities)
         {
+            CLEAR_ENTITIES;
             print_player();
+            for (int i = 0; i < monsters->count; i++)
+            {
+                print_monster(monsters->monsters[i], i + 1);
+            }
             print_entities = false;
         }
         display_menu(player);
@@ -134,7 +139,7 @@ game:
             case '1': // Attack
                 CLEAR_MENU;
                 print_monsters_list(monsters);
-                manage_player_attack(monsters, player);
+                manage_player_attack(monsters, player, &print_entities);
                 break;
             case '2': // Use potion
                 if (player->potion_counter == WAIT_FOR_POTION)

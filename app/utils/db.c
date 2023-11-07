@@ -285,12 +285,22 @@ void delete_save(sqlite3 *db, int id)
 {
     char *err_msg = 0;
     char *sql = malloc(100 * sizeof(char));
+
+    // Delete player
     sprintf(sql, "DELETE FROM players WHERE id = %d", id);
     int rc = sqlite3_exec(db, sql, NULL, NULL, &err_msg);
     if (rc != SQLITE_OK)
         _handle_sql_error(db, err_msg, true);
     clear_monsters(db, id);
+
+    // Update player ids
     sprintf(sql, "UPDATE players SET id = id - 1 WHERE id > %d", id);
+    rc = sqlite3_exec(db, sql, NULL, NULL, &err_msg);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
+
+    // Update SQLITE_SEQUENCE
+    sprintf(sql, "UPDATE SQLITE_SEQUENCE SET seq = seq - 1 WHERE name = 'PLAYERS'");
     rc = sqlite3_exec(db, sql, NULL, NULL, &err_msg);
     if (rc != SQLITE_OK)
         _handle_sql_error(db, err_msg, true);

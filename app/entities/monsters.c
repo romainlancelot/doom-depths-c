@@ -40,11 +40,11 @@ Monster *create_monster(char *name, int health, int min_attack, int max_attack, 
  */
 Monsters *create_random_monster(int count)
 {
-    char *names[] = {"Goblin", "Orc", "Troll", "Dragon", "Giant", "Golem", "Ghoul"};
+    char *names[] = {"darkangel", "griffon", "grimreaper"};
     Monster **monsters = malloc(sizeof(Monster *) * count);
     for (int i = 0; i < count; i++)
     {
-        char *name = names[rand() % 7];
+        char *name = names[rand() % 3];
         monsters[i] = create_monster(name, rand() % 100, rand() % 10, rand() % 20, rand() % 10);
     }
 
@@ -88,6 +88,27 @@ void print_monsters_list(Monsters *monsters)
         printf("%d - %s (%d/%d)\n", i + 1, name, health, max_health);
     }
     printf("\n%d - Back\n", monsters->count + 1);
+}
+
+void print_monster(Monster *monster, int number)
+{
+    int random_row = rand() % 7 + 10;
+    char *file_path = malloc(sizeof(char) * 100);
+    sprintf(file_path, "ui/resources/%s.txt", monster->name);
+    FILE *file = fopen(file_path, "r");
+    if (file == NULL)
+    {
+        printf("Error opening player ASCII file!\n");
+        exit(1);
+    }
+    printf("\033[%d;H", random_row);
+    char line[256];
+    while (fgets(line, sizeof(line), file))
+    {
+        printf("\e[%dC", (number * 25) * 2);
+        printf("%s", line);
+    }
+    printf("\n\n");
 }
 
 /**

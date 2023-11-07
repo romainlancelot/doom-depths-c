@@ -3,12 +3,19 @@
 
 #include "../utils/headers.h"
 
+
+typedef enum {
+    ATTACK,
+    DEFENSE,
+    MANA
+} StuffType;
+
 typedef struct {
     char *name;
-    int attack;
-    int defense;
-    int health;
+    int bonus;
     int price;
+    short equipped;
+    StuffType type;
 } Stuff;
 
 typedef struct
@@ -32,5 +39,6 @@ extern Player *create_player();
 extern void print_player_stats(Player *player);
 extern void print_player();
 extern void heal_player(Player *player, int amount);
+extern void equip_stuff(Player *player);
 
 #endif

@@ -16,20 +16,21 @@ Player *create_player(int id)
     player->id = id;
 
     // Health
-    player->current_health = 100;
-    player->max_health = 100;
+    player->current_health = DEFAULT_HEALTH;
+    player->max_health = DEFAULT_HEALTH;
 
     // Mana
-    player->current_mana = 100;
-    player->max_mana = 100;
+    player->current_mana = DEFAULT_MANA;
+    player->max_mana = DEFAULT_MANA;
 
     // Stats
-    player->attack_power = 20;
+    player->attack_power = DEFAULT_ATTACK_POWER;
     player->experience = 0;
     player->level = 1;
-    player->defense = 10;
+    player->defense = DEFAULT_DEFENSE;
     player->gold = 0;
-    player->attack_left = 3;
+    player->attack_left = ATTACK_NUMBER;
+    player->potion_counter = WAIT_FOR_POTION;
     return player;
 }
 
@@ -103,15 +104,15 @@ void heal_player(Player *player, int amount)
 char *save_player(Player *player)
 {
     char *sql = malloc(1000 * sizeof(char));
-    char *base = "INSERT INTO players (current_health, max_health, current_mana, max_mana, gold, experience, level, defense, attack_power, attack_left) VALUES";
-    sprintf(sql, "%s (%d, %d, %d, %d, %d, %d, %d, %d, %d, %d);", base, player->current_health, player->max_health, player->current_mana, player->max_mana, player->gold, player->experience, player->level, player->defense, player->attack_power, player->attack_left);
+    char *base = "INSERT INTO players (current_health, max_health, current_mana, max_mana, gold, experience, level, defense, attack_power, attack_left, potion_counter) VALUES";
+    sprintf(sql, "%s (%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d);", base, player->current_health, player->max_health, player->current_mana, player->max_mana, player->gold, player->experience, player->level, player->defense, player->attack_power, player->attack_left, player->potion_counter);
     return sql;
 }
 
 char *update_player(Player *player)
 {
     char *sql = malloc(1000 * sizeof(char));
-    char *base = "UPDATE players SET current_health = %d, max_health = %d, current_mana = %d, max_mana = %d, gold = %d, experience = %d, level = %d, defense = %d, attack_power = %d, attack_left = %d WHERE id = %d;";
-    sprintf(sql, base, player->current_health, player->max_health, player->current_mana, player->max_mana, player->gold, player->experience, player->level, player->defense, player->attack_power, player->attack_left, player->id);
+    char *base = "UPDATE players SET current_health = %d, max_health = %d, current_mana = %d, max_mana = %d, gold = %d, experience = %d, level = %d, defense = %d, attack_power = %d, attack_left = %d, potion_counter = %d WHERE id = %d;";
+    sprintf(sql, base, player->current_health, player->max_health, player->current_mana, player->max_mana, player->gold, player->experience, player->level, player->defense, player->attack_power, player->attack_left, player->potion_counter, player->id);
     return sql;
 }

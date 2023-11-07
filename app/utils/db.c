@@ -101,7 +101,7 @@ void save(sqlite3 *db, char *sql)
  * @param player Pointer to the Player struct to load the data into.
  * @param argc Number of columns in the query result.
  * @param argv Array of strings containing the values of the columns in the query result.
- * @param azColName Array of strings containing the names of the columns in the query result.
+ * @param columns Array of strings containing the names of the columns in the query result.
  * @return 0 if successful.
  */
 static int _load_player(Player *player, int argc, char **argv, char **columns)
@@ -117,6 +117,7 @@ static int _load_player(Player *player, int argc, char **argv, char **columns)
     player->defense = atoi(argv[8]);
     player->attack_power = atoi(argv[9]);
     player->attack_left = atoi(argv[10]);
+    player->potion_counter = atoi(argv[11]);
     return 0;
 }
 

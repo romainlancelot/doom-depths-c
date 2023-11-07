@@ -10,4 +10,13 @@
 
 #define DB_NAME "db.sqlite3"
 
+#define DEFAULT_HEALTH 100
+#define DEFAULT_MANA 100
+#define DEFAULT_ATTACK_POWER 20
+#define DEFAULT_DEFENSE 10
+#define ATTACK_NUMBER 3
+#define WAIT_FOR_POTION 6
+#define HEALING_AMOUNT 20
+#define MAX_SAVE 3
+
 #endif // DEF_HEADER_DISPLAY_STANDARS

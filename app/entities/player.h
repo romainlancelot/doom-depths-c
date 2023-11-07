@@ -14,6 +14,7 @@ typedef struct
     int defense;
     int attack_power;
     int attack_left;
+    int potion_counter;
 } Player;
 Player *create_player(int id);
 void print_player_stats(Player *player);

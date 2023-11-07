@@ -7,6 +7,7 @@ Project made for the ESGI C pool. This is the remake of the game Doomdepths in C
 <h1>Table of contents</h1>
 
 - [Installation](#installation)
+- [How to play](#how-to-play)
 
 # Installation
 
@@ -15,15 +16,20 @@ If you are on Windows and / or don't have a compiler, don't worry i got you cove
 Simply run the docker image with the following command:
 
 ```bash
-you@debian:~$ docker compose up -d --build
-you@debian:~$ docker exec -it doomsdepths bash -c "make && ./prog"
+you@your_machine:~$ docker compose up -d --build
+you@your_machine:~$ docker exec -it doomsdepths bash -c "make && ./prog"
 ```
 
 Otherwise, if you're truly a king and have a UNIX system 🤩, you can simply run the following command:
 
 ```bash
-you@debian:~$ make && ./prog
+you@your_machine:~$ make install # This will install the required dependencies
+you@your_machine:~$ make && ./prog
 ```
+
+# How to play
+
+The game is pretty simple, you have to kill the enemies and survive as long as you can.
 
 <h1>Thanks for reading and playing our game</h1>
 

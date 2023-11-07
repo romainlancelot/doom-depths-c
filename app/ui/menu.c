@@ -23,11 +23,35 @@ void _print_menu(char *filename)
         exit(1);
     }
     printf("\e[3;H");
-    char line[256];
-    while (fgets(line, sizeof(line), file))
+    char character;
+    while ((character = fgetc(file)) != EOF)
     {
-        printf("%s", line);
+        if (character >= '0' && character <= '9')
+        {
+            char color[4];
+            int i = 0;
+            for (; character >= '0' && character <= '9'; i++)
+            {
+                color[i] = character;
+                character = fgetc(file);
+            }
+            color[i] = '\0';
+
+            if (atoi(color) == 0)
+            {
+                RESET_COLOR;
+                printf("%c", character);
+                continue;
+            }
+            printf("\e[38;5;%sm", color);
+            printf("%c", character);
+        }
+        else
+        {
+            printf("%c", character);
+        }
     }
+    RESET_COLOR;
 }
 
 /**

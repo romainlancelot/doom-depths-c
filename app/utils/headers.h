@@ -7,6 +7,7 @@
 #define SAVE_CURSOR printf("\e7");
 #define RESTORE_CURSOR printf("\e8");
 #define CLEAR_SCREEN printf("\e[2H\e[J\e[H");
+#define RESET_COLOR printf("\e[0m");
 
 #define DB_NAME "db.sqlite3"
 

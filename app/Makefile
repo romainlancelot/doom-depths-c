@@ -16,7 +16,7 @@ utils/db.o: utils/db.c utils/db.h
 	$(CC) -c $< -o $@
 
 install:
-	apt install gcc -y
+	apt install gcc sqlite-dev sqlite -y
 
 clean:
 	rm -rf *.o $(EXE)

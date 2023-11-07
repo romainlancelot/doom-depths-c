@@ -60,6 +60,7 @@ void manage_player_attack(Monsters *monsters, Player *player)
                 if (monster->current_health <= 0)
                     remove_monster(monsters, monster);
                     player->gold += GOLD_ON_MONSTER_DEATH;
+                    give_mana(player);
                 break;
             }
         }

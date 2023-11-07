@@ -91,6 +91,9 @@ void print_stuff(Stuff *stuff)
         case DEFENSE:
             printf("Defense + %d", stuff->bonus);
             break;
+        case MANA:
+            printf("Mana + %d", stuff->bonus);
+            break;
     }
 }
 
@@ -132,16 +135,6 @@ void destroy_stuff(Stuff *stuff)
 {
     free(stuff->name);
     free(stuff);
-}
-
-void destroy_stuff_list(StuffList *stuff_list)
-{
-    for (int i = 0; i < stuff_list->stuff_count; i++)
-    {
-        destroy_stuff(stuff_list->stuff[i]);
-    }
-    free(stuff_list->stuff);
-    free(stuff_list);
 }
 
 void remove_stuff(Player *player, int index)
@@ -195,4 +188,63 @@ void buy_stuff(Player *player, StuffList *stuff_list)
             }
         }
     }
+}
+
+void equip_stuff(Player *player)
+{
+    printf("Which stuff do you want to equip ? Press any other key to cancel.\n");
+    char user_input;
+    if (read(STDIN_FILENO, &user_input, 1) == 1)
+    {
+        GOTO_LOG;
+        int choice = atoi(&user_input);
+        if (choice < 0 || choice >= player->stuff_count)
+        {
+            printf("Invalid choice !");
+            return;
+        }
+        if (player->stuff[choice]->equipped)
+        {
+            printf("This stuff is already equipped !");
+            return;
+        }
+        if (player->stuff[choice]->type == MANA)
+        {
+            if (player->current_mana == player->max_mana)
+            {
+                printf("You already have full mana !");
+                return;
+            }
+            player->current_mana += player->stuff[choice]->bonus;
+            if (player->current_mana > player->max_mana)
+                player->current_mana = player->max_mana;
+            printf("You drank a mana potion and restored %d mana points !", player->stuff[choice]->bonus);
+            remove_stuff(player, choice);
+            return;
+        }
+        for (int i = 0; i < player->stuff_count; i++)
+        {
+            if (player->stuff[i]->equipped && player->stuff[i]->type == player->stuff[choice]->type)
+            {
+                player->stuff[i]->equipped = false;
+                printf("You unequipped %s. ", player->stuff[i]->name);
+                break;
+            }
+        }
+        player->stuff[choice]->equipped = true;
+        printf("You equipped %s !", player->stuff[choice]->name);
+        fflush(stdout);
+    }
+}
+
+
+void give_mana(Player *player)
+{
+    int mana_value = rand() % 10 + 10;
+    Stuff *mana_stuff = create_stuff(MANA, "Mana potion", mana_value, 0);
+    player->stuff_count++;
+    player->stuff = realloc(player->stuff, sizeof(Stuff *) * player->stuff_count);
+    player->stuff[player->stuff_count - 1] = mana_stuff;
+    GOTO_LOG;
+    printf("You found a mana potion !\n");
 }

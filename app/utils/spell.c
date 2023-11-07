@@ -9,9 +9,9 @@
 #include "headers.h"
 
 
-char *DamageSpellName[] = {"Fireball","Ice Spike", "Rock Crumble"};
-char *DamageAoeSpellName[] = {"Meteor","Tsunami", "Earthquake"};
-char *HealSpellName[] = {"Healbeam","Spiritual Light","Holy Blessing"};
+char *DamageSpellName[] = {"Fireball","Ice Spike", "Rock Crumble", "Fatal Punch", "Heart Attack"};
+char *DamageAoeSpellName[] = {"Meteor","Tsunami", "Earthquake", "Flaming Tornado", "Massive Destruction"};
+char *HealSpellName[] = {"Healbeam","Spiritual Light","Holy Blessing", "Ultimate Recovery", "Phoenix Flame"};
 
 /**
  * Creates a new monster with the given attributes.
@@ -47,29 +47,30 @@ Spell *create_random_spell()
     Spell *spell = malloc(sizeof(Spell));
 
     int spelltype = rand() % 3;
+    int spellLevel = rand() % 50 + 10;
+    double nameArrayChoice = ((double)spellLevel/50)*5-1;
 
     char *name = "";
     switch (spelltype) {
         case 0:
             spell->type=DAMAGE;
-            name = DamageSpellName[rand() % 3];
+            name = DamageSpellName[(int)nameArrayChoice];
             break;
         case 1:
             spell->type=DAMAGE_AOE;
-            name = DamageAoeSpellName[rand() % 3];
+            name = DamageAoeSpellName[(int)nameArrayChoice];
             break;
         case 2:
             spell->type=HEAL;
-            name = HealSpellName[rand() % 3];
+            name = HealSpellName[(int)nameArrayChoice];
             break;
     }
     spell->name = malloc(sizeof(char) * (strlen(name) + 1));
     strcpy(spell->name, name);
-
-    int spellLevel = rand() % 40 + 10;
-    spell->power = spellLevel + rand() % 10;
-    spell->mana_cost = spellLevel/1.5 + rand() % 10;
-    int cooldown = spellLevel/5 + rand() % 10;
+    int shaker = rand() % 20;
+    spell->power = spellLevel + shaker;
+    spell->mana_cost = spellLevel/1.5 + shaker;
+    int cooldown = spellLevel/5 + shaker;
     spell->cooldown = cooldown;
     spell->recharge = cooldown;
     return spell;
@@ -83,14 +84,14 @@ Spell *create_random_spell()
  */
 Spells *create_base_spell_list()
 {
-    Spell **spells = malloc(sizeof(Spell *) * 4);
+    Spell **spells = malloc(sizeof(Spell *) * 3);
     spells[0] = create_spell("Fireball", rand() % 50, rand() % 30 + 10, rand() % 15 + 1, DAMAGE);
     spells[1] = create_spell("Meteor", rand() % 50, rand() % 30 + 10, rand() % 15 + 1, DAMAGE_AOE);
     spells[2] = create_spell("Heal", rand() % 50, rand() % 30 + 10, rand() % 15 + 1, HEAL);
 
     Spells *spell_list = malloc(sizeof(Spells));
     spell_list->spells = spells;
-    spell_list->count = 4;
+    spell_list->count = 3;
     return spell_list;
 }
 

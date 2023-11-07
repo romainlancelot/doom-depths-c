@@ -83,7 +83,7 @@ game:
 
     Monsters *monsters = create_random_monster(4);
     Player *player = create_player();
-    Stuff **stuff = create_stuff_list();
+    Stuff *StuffList = create_random_stuff_list(STUFF_NUMBER);
     bool print_entities = true;
 
     char user_input;
@@ -120,8 +120,8 @@ game:
                 break;
             case '4':
                 CLEAR_MENU;
-                print_stuff_list(stuff);
-                buy_stuff(player, stuff);
+                print_stuff_list(StuffList);
+                buy_stuff(player, StuffList);
                 break;
             case '8':
                 if (potion_counter != WAIT_FOR_POTION)

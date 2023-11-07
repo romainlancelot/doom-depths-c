@@ -96,20 +96,6 @@ void save(sqlite3 *db, char *sql)
 }
 
 /**
- * Updates the specified SQLite database with the given SQL statement.
- *
- * @param db The SQLite database to update.
- * @param sql The SQL statement to execute.
- */
-void update(sqlite3 *db, char *sql)
-{
-    char *err_msg = 0;
-    int rc = sqlite3_exec(db, sql, 0, 0, &err_msg);
-    if (rc != SQLITE_OK)
-        _handle_sql_error(db, err_msg, false);
-}
-
-/**
  * Loads player data from the database query result into a Player struct.
  *
  * @param player Pointer to the Player struct to load the data into.
@@ -151,38 +137,6 @@ Player *load_player(sqlite3 *db, int id)
     if (rc != SQLITE_OK)
         _handle_sql_error(db, err_msg, true);
     return player;
-}
-
-/**
- * This function is a callback used to load all saved player data from the database.
- * It prints the loaded player's level, health, mana, and gold to the console.
- *
- * @param data A pointer to user data that can be passed to the callback function.
- * @param argc The number of arguments passed to the callback function.
- * @param argv An array of strings containing the values of the arguments passed to the callback function.
- * @param columns An array of strings containing the names of the columns in the result set.
- *
- * @return 0 to continue executing the SQL statement, or non-zero to halt execution.
- */
-static int _load_all_save(void *data, int argc, char **argv, char **columns)
-{
-    printf("%d - Load player level %s: health: %s/%s, mana: %s/%s, gold: %s\n", atoi(argv[0]) + 1, argv[7], argv[1], argv[2], argv[3], argv[4], argv[5]);
-    return 0;
-}
-
-/**
- * Loads all saved data from the specified SQLite database file.
- *
- * @param db The SQLite database to load the data from.
- */
-void load_all_save(sqlite3 *db)
-{
-    char *err_msg = 0;
-    char *sql = malloc(100 * sizeof(char));
-    sprintf(sql, "SELECT * FROM players");
-    int rc = sqlite3_exec(db, sql, _load_all_save, NULL, &err_msg);
-    if (rc != SQLITE_OK)
-        _handle_sql_error(db, err_msg, true);
 }
 
 /**
@@ -284,6 +238,59 @@ void clear_monsters(sqlite3 *db, int id)
     char *sql = malloc(100 * sizeof(char));
     sprintf(sql, "DELETE FROM monsters WHERE player_id = %d", id);
     int rc = sqlite3_exec(db, sql, NULL, NULL, &err_msg);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
+}
+
+/**
+ * This function is a callback used to load all saved player data from the database.
+ * It prints the loaded player's level, health, mana, and gold to the console.
+ *
+ * @param data A pointer to user data that can be passed to the callback function.
+ * @param argc The number of arguments passed to the callback function.
+ * @param argv An array of strings containing the values of the arguments passed to the callback function.
+ * @param columns An array of strings containing the names of the columns in the result set.
+ *
+ * @return 0 to continue executing the SQL statement, or non-zero to halt execution.
+ */
+static int _load_all_save(void *data, int argc, char **argv, char **columns)
+{
+    printf("%d - Load player level %s: health: %s/%s, mana: %s/%s, gold: %s\n", atoi(argv[0]) + 1, argv[7], argv[1], argv[2], argv[3], argv[4], argv[5]);
+    return 0;
+}
+
+/**
+ * Loads all saved data from the specified SQLite database file.
+ *
+ * @param db The SQLite database to load the data from.
+ */
+void load_all_save(sqlite3 *db)
+{
+    char *err_msg = 0;
+    char *sql = malloc(100 * sizeof(char));
+    sprintf(sql, "SELECT * FROM players");
+    int rc = sqlite3_exec(db, sql, _load_all_save, NULL, &err_msg);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
+}
+
+/**
+ * Deletes a player save from the database.
+ *
+ * @param db The SQLite database connection.
+ * @param id The ID of the player save to delete.
+ */
+void delete_save(sqlite3 *db, int id)
+{
+    char *err_msg = 0;
+    char *sql = malloc(100 * sizeof(char));
+    sprintf(sql, "DELETE FROM players WHERE id = %d", id);
+    int rc = sqlite3_exec(db, sql, NULL, NULL, &err_msg);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
+    clear_monsters(db, id);
+    sprintf(sql, "UPDATE players SET id = id - 1 WHERE id > %d", id);
+    rc = sqlite3_exec(db, sql, NULL, NULL, &err_msg);
     if (rc != SQLITE_OK)
         _handle_sql_error(db, err_msg, true);
 }

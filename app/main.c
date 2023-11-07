@@ -85,27 +85,37 @@ int main()
 
 choice:
     int user_choice = handle_start_menu(db);
-    if (user_choice == 0)
+    int player_count = get_player_count(db);
+
+    switch (user_choice)
     {
+    case 0:
         printf("\nQuitting game, thanks for playing !\n");
         return 0;
-    }
-    else if (user_choice == 1)
-    {
-        int player_count = get_player_count(db);
+    case 1:
         if (player_count == MAX_SAVE)
         {
             printf("\nYou already have 3 saves, load one to continue.\n");
-            fflush(stdout);
             goto choice;
         }
         player = create_player(player_count + 1);
         monsters = create_random_monster(rand() % 4 + 1);
-    }
-    else
-    {
+        break;
+    case 9:
+        user_choice = handle_delete_save_menu(db);
+        if (user_choice == 0)
+            goto choice;
+        delete_save(db, user_choice - 1);
+        goto choice;
+    default:
+        if (user_choice - 1 > player_count)
+        {
+            printf("\nThis save doesn't exist, please choose another one.\n");
+            goto choice;
+        }
         player = load_player(db, user_choice - 1);
         monsters = load_monsters(db, player->id);
+        break;
     }
 
 game:
@@ -150,9 +160,10 @@ game:
                         CLEAR_SCREEN;
                         if (handle_death_menu())
                         {
+                            int id = player->id;
                             free(player);
                             destroy_monsters(monsters);
-                            player = create_player(player->id);
+                            player = create_player(id);
                             goto game;
                         }
                         else
@@ -163,16 +174,17 @@ game:
                 GOTO_LOG;
                 break;
             case '0':
+                CLEAR_SCREEN;
                 if (user_choice == 1)
                 {
                     save(db, save_player(player));
                     save(db, save_monsters(monsters, player->id));
-                    goto end;
+                    goto choice;
                 }
-                update(db, update_player(player));
+                save(db, update_player(player));
                 clear_monsters(db, player->id);
                 save(db, save_monsters(monsters, player->id));
-                goto end;
+                goto choice;
             }
         }
     }
@@ -183,6 +195,5 @@ end:
     pthread_cancel(tid);
     pthread_join(tid, NULL);
     destroy_monsters(monsters);
-
     return 0;
 }

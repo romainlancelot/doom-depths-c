@@ -56,7 +56,22 @@ int handle_start_menu(sqlite3 *db)
     _print_menu("ui/resources/logo.txt");
     printf("\n\n\n1 - Start game\n");
     load_all_save(db);
-    printf("0 - Quit game\n");
+    printf("\n9 - Delete a save\n\n0 - Quit game\n");
+    return _handle_user_input();
+}
+
+/**
+ * Displays a menu for deleting a save file and handles user input.
+ *
+ * @param db A pointer to the SQLite database.
+ * @return The user's input as an integer.
+ */
+int handle_delete_save_menu(sqlite3 *db)
+{
+    _print_menu("ui/resources/logo.txt");
+    printf("\n\n\nChoose a save to delete:\n\n");
+    load_all_save(db);
+    printf("\n0 - Return to main menu\n");
     return _handle_user_input();
 }
 

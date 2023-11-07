@@ -83,7 +83,7 @@ game:
 
     Monsters *monsters = create_random_monster(4);
     Player *player = create_player();
-    Stuff *StuffList = create_random_stuff_list(STUFF_NUMBER);
+    StuffList *StuffList = create_random_stuff_list(STUFF_NUMBER);
     bool print_entities = true;
 
     char user_input;

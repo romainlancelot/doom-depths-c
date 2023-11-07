@@ -39,6 +39,5 @@ extern Player *create_player();
 extern void print_player_stats(Player *player);
 extern void print_player();
 extern void heal_player(Player *player, int amount);
-extern void equip_stuff(Player *player);
 
 #endif

@@ -42,11 +42,11 @@ Monster *create_monster(char *name, int health, int min_attack, int max_attack, 
  */
 Monsters *create_random_monster(int count)
 {
-    char *names[] = {"darkangel", "griffon", "grimreaper"};
+    char *names[] = {"darkangel", "griffon", "grimreaper", "dragon"};
     Monster **monsters = malloc(sizeof(Monster *) * count);
     for (int i = 0; i < count; i++)
     {
-        char *name = names[rand() % 3];
+        char *name = names[rand() % 4];
         monsters[i] = create_monster(name, rand() % 100, rand() % 10, rand() % 20, rand() % 10);
     }
 

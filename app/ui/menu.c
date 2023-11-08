@@ -72,7 +72,7 @@ void print_entity(char *filename, int line, int column)
         else
         {
             printf("%c", character);
-            if (column && character == '\n')
+            if (column && (character == '\n' || character == '\r'))
                 printf("\e[%dC", (column * 25) * 2);
         }
     }

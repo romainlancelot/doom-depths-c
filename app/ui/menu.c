@@ -10,6 +10,31 @@
 #include "../utils/db.h"
 
 /**
+ * @brief Logs a message to the console at a specific line.
+ *
+ * @param message The message to log.
+ * @param line The line number to log the message at.
+ */
+void log(char *message, int line)
+{
+    SAVE_CURSOR;
+    printf("\e[%d;H\e[2K", line);
+    printf("%s", message);
+    RESTORE_CURSOR;
+    fflush(stdout);
+}
+
+/**
+ * Clears the console screen from the given line number to the bottom of the screen.
+ * @param line The line number to start clearing from.
+ */
+void clear(int line)
+{
+    printf("\e[%d;H\e[J\r", line);
+    fflush(stdout);
+}
+
+/**
  * Prints the start menu of the game, including the game's logo and options to start or quit the game.
  * If the logo file cannot be opened, an error message is printed and the program exits.
  */
@@ -63,10 +88,7 @@ int _handle_user_input()
 {
     char user_input;
     if (read(STDIN_FILENO, &user_input, 1) == 1)
-    {
-        CLEAR_SCREEN;
         return user_input - '0';
-    }
 }
 
 /**

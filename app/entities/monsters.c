@@ -85,11 +85,17 @@ void print_monsters_list(Monsters *monsters)
         char *name = monsters->monsters[i]->name;
         int health = monsters->monsters[i]->current_health;
         int max_health = monsters->monsters[i]->max_health;
-        printf("%d - %s (%d/%d)\n", i + 1, name, health, max_health);
+        printf("%d - %c%s (%d/%d)\n", i + 1, toupper(name[0]), name + 1, health, max_health);
     }
     printf("\n%d - Back\n", monsters->count + 1);
 }
 
+/**
+ * Prints the ASCII art representation of a monster to the console.
+ *
+ * @param monster Pointer to the Monster struct to be printed.
+ * @param number The number of the monster in the list of monsters to be printed.
+ */
 void print_monster(Monster *monster, int number)
 {
     int random_row = rand() % 7 + 10;

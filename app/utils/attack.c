@@ -40,30 +40,27 @@ void manage_player_attack(Monsters *monsters, Player *player, bool *print_entiti
     {
         if (read(STDIN_FILENO, &user_input, 1) == 1)
         {
-            GOTO_LOG;
-            if (user_input == '0' + monsters->count + 1)
+            int choice = atoi(&user_input);
+            if (choice == monsters->count + 1)
                 return;
-            else if (user_input < '1' || user_input > '0' + monsters->count)
+            else if (choice < 1 || choice > monsters->count)
                 continue;
-            else
+            GOTO_LOG;
+            // Checks if the player has any attack left.
+            if (player->attack_left == 0)
             {
-                // Checks if the player has any attack left.
-                if (player->attack_left == 0)
-                {
-                    printf("You have no attack left !");
-                    return;
-                }
-                // Attacks the selected monster.
-                int choice = atoi(&user_input);
-                Monster *monster = monsters->monsters[choice - 1];
-                attack_monster(monster, player);
-                if (monster->current_health <= 0)
-                {
-                    remove_monster(monsters, monster);
-                    *print_entities = true;
-                }
-                break;
+                printf("You have no attack left !");
+                return;
             }
+            // Attacks the selected monster.
+            Monster *monster = monsters->monsters[choice - 1];
+            attack_monster(monster, player);
+            if (monster->current_health <= 0)
+            {
+                remove_monster(monsters, monster);
+                *print_entities = true;
+            }
+            break;
         }
     }
 }
@@ -75,6 +72,8 @@ void attack_player(Player *player, Monster *monster)
     // if (total_damage < 0)
     //     total_damage = 0;
     player->current_health -= total_damage;
+    if (player->current_health < 0)
+        player->current_health = 0;
     SAVE_CURSOR;
     GOTO_LOG;
     printf("%s dealt %d damage to you ! Press a key to continue", monster->name, total_damage);

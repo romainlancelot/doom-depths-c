@@ -52,7 +52,7 @@ void display_title()
  */
 void display_menu(Player *player)
 {
-    CLEAR_MENU;
+    clear(GAME_MENU_LINE);
     printf("What do you want to do ?\n\n");
     printf("1 - Attack (%d/%d)\n", player->attack_left, ATTACK_NUMBER);
     if (player->potion_counter == WAIT_FOR_POTION)
@@ -79,6 +79,7 @@ int main()
     Monsters *monsters = NULL;
 
 choice:
+    clear(MAIN_MENU_LINE);
     int user_choice = handle_start_menu(db);
     int player_count = get_player_count(db);
 
@@ -90,13 +91,14 @@ choice:
     case 1:
         if (player_count == MAX_SAVE)
         {
-            printf("\nYou already have 3 saves, load one to continue.\n");
+            log("You already have 3 saves, load one to continue.", 2);
             goto choice;
         }
         player = create_player(player_count + 1);
-        monsters = create_random_monster(rand() % 4 + 1);
+        monsters = create_random_monster(rand() % 3 + 1);
         break;
     case 9:
+        clear(MAIN_MENU_LINE);
         user_choice = handle_delete_save_menu(db);
         if (user_choice == 0)
             goto choice;
@@ -105,13 +107,14 @@ choice:
     default:
         if (user_choice - 1 > player_count)
         {
-            printf("\nThis save doesn't exist, please choose another one.\n");
+            log("This save does not exist.", 2);
             goto choice;
         }
         player = load_player(db, user_choice - 1);
         monsters = load_monsters(db, player->id);
         break;
     }
+    CLEAR_SCREEN;
 
 game:
     bool print_entities = true;
@@ -122,7 +125,7 @@ game:
         print_player_stats(player);
         if (print_entities)
         {
-            CLEAR_ENTITIES;
+            clear(ENTITY_LINE);
             print_player();
             for (int i = 0; i < monsters->count; i++)
             {
@@ -137,7 +140,7 @@ game:
             switch (user_input)
             {
             case '1': // Attack
-                CLEAR_MENU;
+                clear(GAME_MENU_LINE);
                 print_monsters_list(monsters);
                 manage_player_attack(monsters, player, &print_entities);
                 break;

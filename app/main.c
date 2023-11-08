@@ -6,12 +6,16 @@
 #include <pthread.h>
 #include <stdbool.h>
 #include <sqlite3.h>
+
+#include "config.h"
+#include "utils/headers.h"
 #include "entities/monsters.h"
 #include "entities/player.h"
 #include "utils/attack.h"
-#include "utils/headers.h"
+#include "utils/stuff.h"
 #include "ui/menu.h"
 #include "utils/db.h"
+
 
 /**
  * Sets up the terminal by clearing it and modifying its attributes.
@@ -59,7 +63,8 @@ void display_menu(Player *player)
         printf("2 - Use healing potion (%d)\n", HEALING_AMOUNT);
     else
         printf("2 - Use healing potion (%d turns left)\n", WAIT_FOR_POTION - player->potion_counter);
-    printf("3 - Inventory\n\n");
+    printf("3 - Inventory\n");
+    printf("4 - Buy stuff\n\n");
     printf("8 - End turn\n\n");
     printf("0 - Quit game\n");
 }
@@ -77,6 +82,7 @@ int main()
 
     Player *player = NULL;
     Monsters *monsters = NULL;
+    StuffList *StuffList = create_random_stuff_list(STUFF_NUMBER);
 
 choice:
     clear(MAIN_MENU_LINE);
@@ -153,6 +159,15 @@ game:
                     player->potion_counter = 0;
                     heal_player(player, HEALING_AMOUNT);
                 }
+                break;
+            case '3':
+                clear(GAME_MENU_LINE);
+                print_player_stuff(player);
+                break;
+            case '4':
+                clear(GAME_MENU_LINE);
+                print_stuff_list(StuffList);
+                buy_stuff(player, StuffList);
                 break;
             case '8': // End turn
                 if (player->potion_counter != WAIT_FOR_POTION)

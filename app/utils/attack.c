@@ -1,11 +1,11 @@
+#include "attack.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdbool.h>
-#include "../entities/monsters.h"
-#include "../entities/player.h"
-#include "attack.h"
-#include "headers.h"
+#include <string.h>
+
 
 /**
  * Attacks a monster with a random amount of damage based on the player's attack power.
@@ -18,6 +18,23 @@
 void attack_monster(Monster *monster, Player *player)
 {
     int damage = rand() % (player->attack_power + 1) + 50;
+    if (player->stuff_count > 0)
+    {
+        for (int i = 0; i < player->stuff_count; i++)
+        {
+            if (player->stuff[i]->equipped && player->stuff[i]->type == ATTACK)
+            {
+                damage += player->stuff[i]->bonus;
+                printf("Your %s dealt %d damage ! ", player->stuff[i]->name, player->stuff[i]->bonus);
+                player->stuff[i]->bonus -= damage;
+                if (player->stuff[i]->bonus <= 0)
+                {
+                    printf("Your %s broke. ", player->stuff[i]->name);
+                    remove_stuff(player, i);
+                }
+            }
+        }
+    }
     int total_damage = damage - monster->defense;
     if (total_damage < 0)
         total_damage = 0;
@@ -58,6 +75,8 @@ void manage_player_attack(Monsters *monsters, Player *player, bool *print_entiti
             if (monster->current_health <= 0)
             {
                 remove_monster(monsters, monster);
+                player->gold += GOLD_ON_MONSTER_DEATH;
+                give_mana(player);
                 *print_entities = true;
             }
             break;
@@ -69,13 +88,31 @@ void attack_player(Player *player, Monster *monster)
 {
     int damage = rand() % (monster->max_attack + 1) + monster->min_attack;
     int total_damage = damage;
-    // if (total_damage < 0)
-    //     total_damage = 0;
     player->current_health -= total_damage;
     if (player->current_health < 0)
         player->current_health = 0;
     SAVE_CURSOR;
     GOTO_LOG;
+    if (player->stuff_count > 0)
+    {
+        for (int i = 0; i < player->stuff_count; i++)
+        {
+            if (player->stuff[i]->equipped && player->stuff[i]->type == DEFENSE)
+            {
+                total_damage -= player->stuff[i]->bonus;
+            if (total_damage < 0)
+                    total_damage = 0;
+                printf("Your %s absorbed %d damage ! ", player->stuff[i]->name, player->stuff[i]->bonus);
+                player->stuff[i]->bonus -= damage;
+                if (player->stuff[i]->bonus <= 0)
+                {
+                    printf("Your %s broke. ", player->stuff[i]->name);
+                    remove_stuff(player, i);
+                }
+            }
+        }
+    }
+    player->current_health -= total_damage;
     printf("%s dealt %d damage to you ! Press a key to continue", monster->name, total_damage);
     print_player_stats(player);
     RESTORE_CURSOR;

@@ -17,7 +17,7 @@ Simply run the docker image with the following command:
 
 ```bash
 you@your_machine:~$ docker compose up -d --build
-you@your_machine:~$ docker exec -it doomsdepths bash -c "make && ./prog"
+you@your_machine:~$ docker exec -it doomdepths bash -c "make && ./prog"
 ```
 
 Otherwise, if you're truly a king and have a UNIX system 🤩, you can simply run the following command:

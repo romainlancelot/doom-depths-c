@@ -1,13 +1,12 @@
+#include "menu.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
 #include <sqlite3.h>
-#include "../entities/player.h"
-#include "../entities/monsters.h"
-#include "../utils/headers.h"
-#include "../utils/db.h"
+
 
 /**
  * @brief Logs a message to the console at a specific line.

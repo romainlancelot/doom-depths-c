@@ -1,11 +1,16 @@
-#ifndef MENU_H
-#define MENU_H
+#ifndef DEF_HEADER_MENU
+#define DEF_HEADER_MENU
 
-int handle_start_menu(sqlite3 *db);
-int handle_death_menu();
-int handle_delete_save_menu(sqlite3 *db);
-void log(char *message, int line);
-void clear(int line);
-void print_entity(char *filename, int line, int column);
+#include "../utils/db.h"
+#include "../utils/headers.h"
+#include "../entities/player.h"
+#include "../entities/monsters.h"
+
+extern int handle_start_menu(sqlite3 *db);
+extern int handle_death_menu();
+extern int handle_delete_save_menu(sqlite3 *db);
+extern void log(char *message, int line);
+extern void clear(int line);
+extern void print_entity(char *filename, int line, int column);
 
 #endif // MENU_H

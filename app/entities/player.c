@@ -1,9 +1,11 @@
+#include "player.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdbool.h>
-#include "player.h"
-#include "../utils/headers.h"
+#include <string.h>
+
 
 /**
  * Creates a new player with default values for health, mana, stats, experience, level, and gold.
@@ -31,6 +33,7 @@ Player *create_player(int id)
     player->gold = 0;
     player->attack_left = ATTACK_NUMBER;
     player->potion_counter = WAIT_FOR_POTION;
+    player->stuff_count = 0;
     return player;
 }
 
@@ -42,7 +45,7 @@ Player *create_player(int id)
  * @param max The maximum value to display in the status bar.
  * @param color The color to use for the status bar.
  */
-void _print_stat_bar(char *label, int current, int max, char *color)
+void _print_stat_bar(char *label, int current, int max, char *color, bool newline)
 {
     printf("%s ", label);
     printf("%s", color); // Set color
@@ -54,7 +57,9 @@ void _print_stat_bar(char *label, int current, int max, char *color)
         else
             printf("-");
     }
-    printf("\e[0m %d/%d\n", current, max);
+    printf("\e[0m %d/%d", current, max);
+    if (newline)
+        printf("\n");
 }
 
 /**
@@ -65,8 +70,20 @@ void _print_stat_bar(char *label, int current, int max, char *color)
 void print_player_stats(Player *player)
 {
     GOTO_STATS;
-    _print_stat_bar("Health", player->current_health, player->max_health, "\e[0;31m");
-    _print_stat_bar("  Mana", player->current_mana, player->max_mana, "\e[0;34m");
+    BLANK_LINE;
+    _print_stat_bar("Health", player->current_health, player->max_health, "\e[0;31m", false);
+    if (player->stuff_count > 0)
+    {
+        for (int i = 0; i < player->stuff_count; i++)
+        {
+            if (player->stuff[i]->equipped && player->stuff[i]->type == DEFENSE)
+            {
+                printf(" (%s + %d)", player->stuff[i]->name, player->stuff[i]->bonus);
+            }
+        }
+    }
+    printf("\n");
+    _print_stat_bar("  Mana", player->current_mana, player->max_mana, "\e[0;34m", true);
     printf("  Gold \e[0;33m%d\e[0m\n", player->gold);
 }
 

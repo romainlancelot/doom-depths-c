@@ -11,6 +11,7 @@
 #define GOTO_LOG printf("\e[7;H\e[2K\r");
 #define SAVE_CURSOR printf("\e7");
 #define RESTORE_CURSOR printf("\e8");
+#define BLANK_LINE printf("\e[2K\r");
 #define RESET_COLOR printf("\e[0m");
 
 #define DB_NAME "db.sqlite3"

@@ -1,10 +1,11 @@
+#include "db.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sqlite3.h>
 #include <stdbool.h>
-#include "../entities/player.h"
-#include "../entities/monsters.h"
+
 
 /**
  * Handles SQLite errors by printing the error message to stderr and exiting the program.

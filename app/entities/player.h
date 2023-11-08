@@ -1,5 +1,22 @@
-#if !defined(PLAYER)
-#define PLAYER
+#ifndef DEF_HEADER_PLAYER
+#define DEF_HEADER_PLAYER
+
+#include "../utils/headers.h"
+
+
+typedef enum {
+    ATTACK,
+    DEFENSE,
+    MANA
+} StuffType;
+
+typedef struct {
+    char *name;
+    int bonus;
+    int price;
+    short equipped;
+    StuffType type;
+} Stuff;
 
 typedef struct
 {
@@ -15,11 +32,15 @@ typedef struct
     int attack_power;
     int attack_left;
     int potion_counter;
+    Stuff **stuff;
+    int stuff_count;
 } Player;
-Player *create_player(int id);
-void print_player_stats(Player *player);
-void heal_player(Player *player, int amount);
-char *save_player(Player *player);
-char *update_player(Player *player);
+
+
+extern Player *create_player(int id);
+extern void print_player_stats(Player *player);
+extern void heal_player(Player *player, int amount);
+extern char *save_player(Player *player);
+extern char *update_player(Player *player);
 
 #endif // PLAYER

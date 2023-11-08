@@ -13,7 +13,7 @@ char *stuff_attacks_names[] = {
     "Axe"
 };
 
-int stuff_defenses_count = 1;
+int stuff_defenses_count = 2;
 char *stuff_defenses_names[] = {
     "Shield",
     "Armor"

@@ -126,10 +126,13 @@ game:
         if (print_entities)
         {
             clear(ENTITY_LINE);
-            print_player();
+            print_entity("ui/resources/player.txt", PLAYER_LINE, 0);
             for (int i = 0; i < monsters->count; i++)
             {
-                print_monster(monsters->monsters[i], i + 1);
+                char *filename = malloc(sizeof(char) * 100);
+                sprintf(filename, "ui/resources/%s.txt", monsters->monsters[i]->name);
+                int random_row = rand() % 7 + 10;
+                print_entity(filename, random_row, i + 1);
             }
             print_entities = false;
         }

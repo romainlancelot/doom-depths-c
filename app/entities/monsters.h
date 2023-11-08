@@ -23,6 +23,5 @@ void destroy_monsters(Monsters *monsters);
 void print_monsters_list(Monsters *monsters);
 void remove_monster(Monsters *monsters, Monster *monster);
 char *save_monsters(Monsters *monsters, int id);
-void print_monster(Monster *monster, int number);
 
 #endif // MONSTERS

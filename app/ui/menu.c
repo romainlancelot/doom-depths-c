@@ -35,6 +35,51 @@ void clear(int line)
 }
 
 /**
+ * Prints the contents of a file to the console with optional color formatting.
+ * @param filename The name of the file to print.
+ * @param line The line number to start printing from.
+ * @param column The column number to start printing from.
+ */
+void print_entity(char *filename, int line, int column)
+{
+    FILE *file = fopen(filename, "r");
+    if (file == NULL)
+    {
+        printf("Error opening player ASCII file %s!\n", filename);
+        exit(1);
+    }
+    printf("\e[%d;H", line);
+    printf("\e[%dC", (column * 25) * 2);
+    char character;
+    while ((character = fgetc(file)) != EOF)
+    {
+        if (character >= '0' && character <= '9')
+        {
+            char color[4];
+            int i = 0;
+            for (; character >= '0' && character <= '9'; i++)
+            {
+                color[i] = character;
+                character = fgetc(file);
+            }
+            color[i] = '\0';
+
+            printf("\e[38;5;%sm", color);
+            if (atoi(color) == 0)
+                RESET_COLOR;
+            printf("%c", character);
+        }
+        else
+        {
+            printf("%c", character);
+            if (column && character == '\n')
+                printf("\e[%dC", (column * 25) * 2);
+        }
+    }
+    RESET_COLOR;
+}
+
+/**
  * Prints the start menu of the game, including the game's logo and options to start or quit the game.
  * If the logo file cannot be opened, an error message is printed and the program exits.
  */
@@ -62,13 +107,9 @@ void _print_menu(char *filename)
             }
             color[i] = '\0';
 
-            if (atoi(color) == 0)
-            {
-                RESET_COLOR;
-                printf("%c", character);
-                continue;
-            }
             printf("\e[38;5;%sm", color);
+            if (atoi(color) == 0)
+                RESET_COLOR;
             printf("%c", character);
         }
         else

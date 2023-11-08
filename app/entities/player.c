@@ -70,27 +70,6 @@ void print_player_stats(Player *player)
     printf("  Gold \e[0;33m%d\e[0m\n", player->gold);
 }
 
-/**
- * This function prints the ASCII art of the player by reading from the "resources/player.txt" file.
- * If the file cannot be opened, the function prints an error message and exits the program with status code 1.
- */
-void print_player()
-{
-    FILE *file = fopen("ui/resources/player.txt", "r");
-    if (file == NULL)
-    {
-        printf("Error opening player ASCII file!\n");
-        exit(1);
-    }
-    printf("\033[20;H");
-    char line[256];
-    while (fgets(line, sizeof(line), file))
-    {
-        printf("%s", line);
-    }
-    printf("\n\n");
-}
-
 void heal_player(Player *player, int amount)
 {
     player->current_health += amount;

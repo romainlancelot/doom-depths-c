@@ -4,6 +4,7 @@
 #define GAME_MENU_LINE 31
 #define MAIN_MENU_LINE 21
 #define ENTITY_LINE 8
+#define PLAYER_LINE 20
 
 #define CLEAR_SCREEN printf("\e[2;H\e[J\e[H");
 #define GOTO_STATS printf("\e[3;H");

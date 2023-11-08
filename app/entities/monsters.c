@@ -3,7 +3,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <sqlite3.h>
 #include "monsters.h"
+#include "../ui/menu.h"
 #include "../utils/headers.h"
 
 /**
@@ -88,33 +90,6 @@ void print_monsters_list(Monsters *monsters)
         printf("%d - %c%s (%d/%d)\n", i + 1, toupper(name[0]), name + 1, health, max_health);
     }
     printf("\n%d - Back\n", monsters->count + 1);
-}
-
-/**
- * Prints the ASCII art representation of a monster to the console.
- *
- * @param monster Pointer to the Monster struct to be printed.
- * @param number The number of the monster in the list of monsters to be printed.
- */
-void print_monster(Monster *monster, int number)
-{
-    int random_row = rand() % 7 + 10;
-    char *file_path = malloc(sizeof(char) * 100);
-    sprintf(file_path, "ui/resources/%s.txt", monster->name);
-    FILE *file = fopen(file_path, "r");
-    if (file == NULL)
-    {
-        printf("Error opening player ASCII file!\n");
-        exit(1);
-    }
-    printf("\033[%d;H", random_row);
-    char line[256];
-    while (fgets(line, sizeof(line), file))
-    {
-        printf("\e[%dC", (number * 25) * 2);
-        printf("%s", line);
-    }
-    printf("\n\n");
 }
 
 /**

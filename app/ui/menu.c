@@ -13,7 +13,7 @@
  * @param message The message to log.
  * @param line The line number to log the message at.
  */
-void log(char *message, int line)
+void _log(char *message, int line)
 {
     SAVE_CURSOR;
     printf("\e[%d;H\e[2K", line);

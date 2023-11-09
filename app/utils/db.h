@@ -3,6 +3,7 @@
 
 #include "../entities/player.h"
 #include "../entities/monsters.h"
+#include "../utils/stuff.h"
 
 extern sqlite3 *init_database(char *db_name);
 extern void save(sqlite3 *db, char *sql);

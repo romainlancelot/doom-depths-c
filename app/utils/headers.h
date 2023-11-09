@@ -5,6 +5,8 @@
 #define MAIN_MENU_LINE 21
 #define ENTITY_LINE 8
 #define PLAYER_LINE 20
+#define MENU_LOG_LINE 2
+#define GAME_LOG_LINE 7
 
 #define CLEAR_SCREEN printf("\e[2;H\e[J\e[H");
 #define GOTO_STATS printf("\e[3;H");

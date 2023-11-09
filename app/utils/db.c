@@ -118,6 +118,9 @@ static int _load_player(Player *player, int argc, char **argv, char **columns)
     player->attack_power = atoi(argv[9]);
     player->attack_left = atoi(argv[10]);
     player->potion_counter = atoi(argv[11]);
+    player->stuff_count = 0;
+    player->stuff = malloc(sizeof(Stuff *));
+
     return 0;
 }
 

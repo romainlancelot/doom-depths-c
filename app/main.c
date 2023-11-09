@@ -81,7 +81,7 @@ int main()
 
     Player *player = NULL;
     Monsters *monsters = NULL;
-    StuffList *StuffList = create_random_stuff_list(STUFF_NUMBER);
+    StuffList *stuff_list = create_random_stuff_list(STUFF_NUMBER);
 
 choice:
     clear(MAIN_MENU_LINE);
@@ -96,7 +96,7 @@ choice:
     case 1:
         if (player_count == MAX_SAVE)
         {
-            log("You already have 3 saves, load one to continue.", 2);
+            _log("You already have 3 saves, load one to continue.", MENU_LOG_LINE);
             goto choice;
         }
         player = create_player(player_count + 1);
@@ -112,7 +112,7 @@ choice:
     default:
         if (user_choice - 1 > player_count)
         {
-            log("This save does not exist.", 2);
+            _log("This save does not exist.", MENU_LOG_LINE);
             goto choice;
         }
         player = load_player(db, user_choice - 1);
@@ -161,12 +161,11 @@ game:
                 break;
             case '3':
                 clear(GAME_MENU_LINE);
-                print_player_stuff(player);
+                equip_stuff(player);
                 break;
             case '4':
                 clear(GAME_MENU_LINE);
-                print_stuff_list(StuffList);
-                buy_stuff(player, StuffList);
+                buy_stuff(player, stuff_list);
                 break;
             case '8': // End turn
                 if (player->potion_counter != WAIT_FOR_POTION)

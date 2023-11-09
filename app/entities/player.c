@@ -33,6 +33,7 @@ Player *create_player(int id)
     player->attack_left = ATTACK_NUMBER;
     player->potion_counter = WAIT_FOR_POTION;
     player->stuff_count = 0;
+    player->stuff = malloc(sizeof(Stuff *));
     return player;
 }
 

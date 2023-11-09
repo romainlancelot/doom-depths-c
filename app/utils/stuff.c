@@ -109,14 +109,6 @@ void print_stuff_list(StuffList *stuff_list)
 
 void print_player_stuff(Player *player)
 {
-
-    if (player->stuff_count == 0)
-    {
-        GOTO_LOG;
-        printf("You don't have any stuff !\n");
-        return;
-    }
-
     for (int i = 0; i < player->stuff_count; i++)
     {
         printf("%d - ", i);
@@ -127,8 +119,6 @@ void print_player_stuff(Player *player)
         }
         printf("\n");
     }
-
-    equip_stuff(player);
 }
 
 void destroy_stuff(Stuff *stuff)
@@ -150,41 +140,44 @@ void remove_stuff(Player *player, int index)
 
 void buy_stuff(Player *player, StuffList *stuff_list)
 {
-    printf("Which stuff do you want to buy ?\nTo back to the menu, press 'b'\n");
+    printf("Which stuff do you want to buy ?\n\n");
+    print_stuff_list(stuff_list);
+    printf("\nPress 'b' to go back.\n");
+
     char user_input;
-    if (read(STDIN_FILENO, &user_input, 1) == 1)
+    while (true)
     {
-        if (user_input == 'b')
+        if (read(STDIN_FILENO, &user_input, 1) == 1)
         {
-            GOTO_LOG;
-            printf("You backed to the menu !\n");
-            return;
-        }
-        int stuff_index = atoi(&user_input);
-        if (stuff_index < 0 || stuff_index > STUFF_NUMBER)
-        {
-            GOTO_LOG;
-            printf("This stuff doesn't exist !\n");
-            return;
-        }
-        else
-        {
-            Stuff *stuff = stuff_list->stuff[stuff_index];
-            if (player->gold >= stuff->price)
-            {
-                player->gold -= stuff->price;
-                player->stuff_count++;
-                player->stuff = realloc(player->stuff, sizeof(Stuff *) * player->stuff_count);
-                player->stuff[player->stuff_count - 1] = stuff;
-                GOTO_LOG;
-                printf("You bought %s !\n", stuff->name);
+            if (user_input == 'b')
                 return;
+
+            int stuff_index = atoi(&user_input);
+            if (stuff_index < 0 || stuff_index > STUFF_NUMBER)
+            {
+                _log("This stuff doesn't exist !\n", GAME_LOG_LINE);
+                continue;
             }
             else
             {
-                GOTO_LOG;
-                printf("You don't have enough gold to buy this stuff !\n");
-                return;
+                Stuff *stuff = stuff_list->stuff[stuff_index];
+                if (player->gold >= stuff->price)
+                {
+                    player->gold -= stuff->price;
+                    player->stuff_count++;
+                    player->stuff = realloc(player->stuff, sizeof(Stuff *) * player->stuff_count);
+                    player->stuff[player->stuff_count - 1] = stuff;
+
+                    char *str = malloc(sizeof(char) * 100);
+                    sprintf(str, "You bought %s !\n", stuff->name);
+                    _log(str, GAME_LOG_LINE);
+                    return;
+                }
+                else
+                {
+                    _log("You don't have enough gold to buy this stuff !\n", GAME_LOG_LINE);
+                    return;
+                }
             }
         }
     }
@@ -192,7 +185,15 @@ void buy_stuff(Player *player, StuffList *stuff_list)
 
 void equip_stuff(Player *player)
 {
-    printf("Which stuff do you want to equip ? Press any other key to cancel.\n");
+    if (player->stuff_count == 0)
+    {
+        _log("You don't have any stuff !", GAME_LOG_LINE);
+        return;
+    }
+
+    printf("Which stuff do you want to equip ?\n\n");
+    print_player_stuff(player);
+    printf("Press any other key to go back.\n");
     char user_input;
     if (read(STDIN_FILENO, &user_input, 1) == 1)
     {

@@ -4,13 +4,13 @@
 #include "headers.h"
 #include "../config.h"
 #include "../entities/player.h"
+#include "../ui/menu.h"
 
-
-typedef struct {
+typedef struct
+{
     Stuff **stuff;
     int stuff_count;
 } StuffList;
-
 
 extern StuffList *create_random_stuff_list(int count);
 extern void print_stuff_list(StuffList *stuff_list);

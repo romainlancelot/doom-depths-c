@@ -1,11 +1,10 @@
-#include "attack.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdbool.h>
 #include <string.h>
 
+#include "attack.h"
 
 /**
  * Attacks a monster with a random amount of damage based on the player's attack power.
@@ -100,7 +99,7 @@ void attack_player(Player *player, Monster *monster)
             if (player->stuff[i]->equipped && player->stuff[i]->type == DEFENSE)
             {
                 total_damage -= player->stuff[i]->bonus;
-            if (total_damage < 0)
+                if (total_damage < 0)
                     total_damage = 0;
                 printf("Your %s absorbed %d damage ! ", player->stuff[i]->name, player->stuff[i]->bonus);
                 player->stuff[i]->bonus -= damage;

@@ -4,7 +4,6 @@
 #include "../entities/player.h"
 #include "../entities/monsters.h"
 
-
 extern sqlite3 *init_database(char *db_name);
 extern void save(sqlite3 *db, char *sql);
 extern Player *load_player(sqlite3 *db, int id);

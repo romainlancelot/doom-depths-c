@@ -1,12 +1,10 @@
-#include "monsters.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
-#include <sqlite3.h>
 
+#include "monsters.h"
 
 /**
  * Creates a new monster with the given attributes.

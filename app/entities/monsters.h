@@ -1,10 +1,6 @@
 #ifndef DEF_HEADER_MONSTERS
 #define DEF_HEADER_MONSTERS
 
-#include "../utils/headers.h"
-#include "../ui/menu.h"
-
-
 typedef struct
 {
     char *name;
@@ -21,6 +17,8 @@ typedef struct
     int count;
 } Monsters;
 
+#include "../utils/headers.h"
+#include "../ui/menu.h"
 
 extern Monster *create_monster(char *name, int health, int min_attack, int max_attack, int defense);
 extern Monsters *create_random_monster(int count);

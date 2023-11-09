@@ -1,10 +1,12 @@
 #ifndef DEF_HEADER_MENU
 #define DEF_HEADER_MENU
 
-#include "../utils/db.h"
-#include "../utils/headers.h"
+#include <sqlite3.h>
+
 #include "../entities/player.h"
 #include "../entities/monsters.h"
+#include "../utils/db.h"
+#include "../utils/headers.h"
 
 extern int handle_start_menu(sqlite3 *db);
 extern int handle_death_menu();

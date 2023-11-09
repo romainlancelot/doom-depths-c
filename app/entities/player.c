@@ -1,11 +1,10 @@
-#include "player.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdbool.h>
 #include <string.h>
 
+#include "player.h"
 
 /**
  * Creates a new player with default values for health, mana, stats, experience, level, and gold.

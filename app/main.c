@@ -16,7 +16,6 @@
 #include "ui/menu.h"
 #include "utils/db.h"
 
-
 /**
  * Sets up the terminal by clearing it and modifying its attributes.
  */

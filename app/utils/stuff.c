@@ -1,24 +1,20 @@
-#include "stuff.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdbool.h>
 #include <string.h>
 
+#include "stuff.h"
 
 int stuff_attacks_count = 2;
 char *stuff_attacks_names[] = {
     "Sword",
-    "Axe"
-};
+    "Axe"};
 
 int stuff_defenses_count = 2;
 char *stuff_defenses_names[] = {
     "Shield",
-    "Armor"
-};
-
+    "Armor"};
 
 Stuff *create_stuff(StuffType type, char *name, int bonus, int price)
 {
@@ -35,12 +31,14 @@ Stuff *create_stuff(StuffType type, char *name, int bonus, int price)
 StuffList *create_random_stuff_list(int count)
 {
     StuffList *stuff_list = malloc(sizeof(StuffList));
-    if (stuff_list == NULL) {
+    if (stuff_list == NULL)
+    {
         return NULL;
     }
 
     stuff_list->stuff = malloc(sizeof(Stuff *) * count);
-    if (stuff_list->stuff == NULL) {
+    if (stuff_list->stuff == NULL)
+    {
         free(stuff_list);
         return NULL;
     }
@@ -53,21 +51,23 @@ StuffList *create_random_stuff_list(int count)
         int price;
         switch (type)
         {
-            case ATTACK:
-                name = stuff_attacks_names[rand() % stuff_attacks_count];
-                bonus = rand() % 10 + 10;
-                price = rand() % 10 + 10;
-                break;
-            case DEFENSE:
-                name = stuff_defenses_names[rand() % stuff_defenses_count];
-                bonus = rand() % 10 + 10;
-                price = rand() % 10 + 10;
-                break;
+        case ATTACK:
+            name = stuff_attacks_names[rand() % stuff_attacks_count];
+            bonus = rand() % 10 + 10;
+            price = rand() % 10 + 10;
+            break;
+        case DEFENSE:
+            name = stuff_defenses_names[rand() % stuff_defenses_count];
+            bonus = rand() % 10 + 10;
+            price = rand() % 10 + 10;
+            break;
         }
         stuff_list->stuff[i] = create_stuff(type, name, bonus, price);
 
-        if (stuff_list->stuff[i] == NULL) {
-            for (int j = 0; j < i; j++) {
+        if (stuff_list->stuff[i] == NULL)
+        {
+            for (int j = 0; j < i; j++)
+            {
                 free(stuff_list->stuff[j]->name);
                 free(stuff_list->stuff[j]);
             }
@@ -85,15 +85,15 @@ void print_stuff(Stuff *stuff)
     printf("%s : ", stuff->name);
     switch (stuff->type)
     {
-        case ATTACK:
-            printf("Attack + %d", stuff->bonus);
-            break;
-        case DEFENSE:
-            printf("Defense + %d", stuff->bonus);
-            break;
-        case MANA:
-            printf("Mana + %d", stuff->bonus);
-            break;
+    case ATTACK:
+        printf("Attack + %d", stuff->bonus);
+        break;
+    case DEFENSE:
+        printf("Defense + %d", stuff->bonus);
+        break;
+    case MANA:
+        printf("Mana + %d", stuff->bonus);
+        break;
     }
 }
 
@@ -236,7 +236,6 @@ void equip_stuff(Player *player)
         fflush(stdout);
     }
 }
-
 
 void give_mana(Player *player)
 {

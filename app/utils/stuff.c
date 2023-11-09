@@ -193,7 +193,7 @@ void equip_stuff(Player *player)
 
     printf("Which stuff do you want to equip ?\n\n");
     print_player_stuff(player);
-    printf("Press any other key to go back.\n");
+    printf("\nPress any other key to go back.\n");
     char user_input;
     if (read(STDIN_FILENO, &user_input, 1) == 1)
     {

@@ -76,15 +76,26 @@ void print_player_stats(Player *player)
     {
         for (int i = 0; i < player->stuff_count; i++)
         {
-            if (player->stuff[i]->equipped && player->stuff[i]->type == DEFENSE)
+            if (player->stuff[i]->equipped)
             {
-                printf(" (%s + %d)", player->stuff[i]->name, player->stuff[i]->bonus);
+                char *str = malloc(sizeof(char) * 100);
+                switch (player->stuff[i]->type)
+                {
+                case DEFENSE:
+                    sprintf(str, " (\e[34mDefense\e[0m + %d)", player->stuff[i]->bonus);
+                    printf("%s", str);
+                    break;
+                case ATTACK:
+                    sprintf(str, " (\e[31mAttack\e[0m + %d)", player->stuff[i]->bonus);
+                    printf("%s", str);
+                    break;
+                }
             }
         }
+        printf("\n");
+        _print_stat_bar("  Mana", player->current_mana, player->max_mana, "\e[0;34m", true);
+        printf("  Gold \e[0;33m%d\e[0m\n", player->gold);
     }
-    printf("\n");
-    _print_stat_bar("  Mana", player->current_mana, player->max_mana, "\e[0;34m", true);
-    printf("  Gold \e[0;33m%d\e[0m\n", player->gold);
 }
 
 void heal_player(Player *player, int amount)

@@ -92,10 +92,10 @@ void print_player_stats(Player *player)
                 }
             }
         }
-        printf("\n");
-        _print_stat_bar("  Mana", player->current_mana, player->max_mana, "\e[0;34m", true);
-        printf("  Gold \e[0;33m%d\e[0m\n", player->gold);
     }
+    printf("\n");
+    _print_stat_bar("  Mana", player->current_mana, player->max_mana, "\e[0;34m", true);
+    printf("  Gold \e[0;33m%d\e[0m\n", player->gold);
 }
 
 void heal_player(Player *player, int amount)

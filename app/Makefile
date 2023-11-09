@@ -1,7 +1,7 @@
 EXE=prog
 CC=gcc
 
-$(EXE): main.o entities/monsters.o entities/player.o ui/menu.o utils/attack.o utils/db.o utils/stuff.o
+$(EXE): main.o entities/monsters.o entities/player.o ui/menu.o utils/attack.o utils/db.o utils/stuff.o utils/spell.o
 	$(CC)  $^ -lpthread -lsqlite3 -ldl -lm -o $@
 	find -type f -name "*.o" | xargs rm 
 
@@ -12,6 +12,7 @@ ui/menu.o: ui/menu.c ui/menu.h
 utils/stuff.o: utils/stuff.c utils/stuff.h
 utils/attack.o: utils/attack.c utils/attack.h
 utils/db.o: utils/db.c utils/db.h
+utils/spell.o: utils/spell.c utils/spell.h
 
 %.o: %.c %.h
 	$(CC) -c $< -o $@

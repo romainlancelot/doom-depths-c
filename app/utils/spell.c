@@ -309,21 +309,20 @@ void recharge_spells(Spells *spells)
     }
 }
 
-/*
-void remove_spell(Monsters *monsters, Monster *monster)
+char *save_spells(Spells *spells, int id)
 {
-    printf(" You killed %s !", monster->name);
-    monsters->count--;
-    Monster **alive_monsters = malloc(sizeof(Monster *) * monsters->count);
-
-    for (int i = 0, j = 0; i < monsters->count + 1; i++)
+    char *sql = malloc(sizeof(char) * 1000);
+    strcpy(sql, "INSERT INTO spell (name, type, power, mana_cost, cooldown, recharge, player_id) VALUES ");
+    for (int i = 0; i < spells->count; i++)
     {
-        if (monsters->monsters[i] != monster)
-            alive_monsters[j++] = monsters->monsters[i];
+        char *values = malloc(sizeof(char) * 100);
+        Spell *spell = spells->spells[i];
+        sprintf(values, "('%s', %d, %d, %d, %d, %d, %d)", spell->name, spell->type, spell->power, spell->mana_cost, spell->cooldown, spell->recharge, id);
+        strcat(sql, values);
+        if (i < spells->count - 1)
+            strcat(sql, ",");
+        free(values);
     }
-    free(monster->name);
-    free(monster);
-    free(monsters->monsters);
-    monsters->monsters = alive_monsters;
+    strcat(sql, ";");
+    return sql;
 }
-*/

@@ -203,17 +203,20 @@ game:
             case '0':
                 CLEAR_SCREEN;
                 if (user_choice == 1)
-                {
                     save(db, save_player(player));
-                    save(db, save_monsters(monsters, player->id));
-                    save(db, save_stuff(player));
-                    goto choice;
-                }
-                save(db, update_player(player));
+                else
+                    save(db, update_player(player));
+
+                // Save monsters in db
                 clear_monsters(db, player->id);
                 save(db, save_monsters(monsters, player->id));
+
+                // Save stuff in db
                 clear_stuff(db, player->id);
                 save(db, save_stuff(player));
+
+                // Save spells in db
+                save(db, save_spells(spells, player->id));
                 goto choice;
             }
         }

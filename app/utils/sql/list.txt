@@ -1,3 +1,4 @@
 utils/sql/init_players.txt
 utils/sql/init_monsters.txt
 utils/sql/init_stuff.txt
+utils/sql/init_spell.txt

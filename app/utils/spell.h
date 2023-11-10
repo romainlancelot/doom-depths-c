@@ -5,10 +5,14 @@
 #include "../entities/monsters.h"
 #include "../entities/player.h"
 
-
-typedef enum {
-    HEAL, DAMAGE, DAMAGE_AOE, BUFF, DEBUFF
-}Spelltype;
+typedef enum
+{
+    HEAL,
+    DAMAGE,
+    DAMAGE_AOE,
+    BUFF,
+    DEBUFF
+} Spelltype;
 
 typedef struct
 {
@@ -37,6 +41,6 @@ void manage_spell_aoe_damage(Monsters *monsters, Spell *spell);
 Spells *create_random_spell_list(int count);
 void destroy_spells(Spells *spells);
 void print_spell_list(Spells *spells);
-//void remove_spell(Spells *spells, Spell *spell);
+// void remove_spell(Spells *spells, Spell *spell);
 
 #endif

@@ -302,6 +302,12 @@ void delete_save(sqlite3 *db, int id)
     if (rc != SQLITE_OK)
         _handle_sql_error(db, err_msg, true);
 
+    // Update monsters ids
+    sprintf(sql, "UPDATE monsters SET player_id = player_id - 1 WHERE player_id > %d", id);
+    rc = sqlite3_exec(db, sql, NULL, NULL, &err_msg);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
+
     // Update SQLITE_SEQUENCE
     sprintf(sql, "UPDATE SQLITE_SEQUENCE SET seq = seq - 1 WHERE name = 'PLAYERS'");
     rc = sqlite3_exec(db, sql, NULL, NULL, &err_msg);

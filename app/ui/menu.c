@@ -47,7 +47,7 @@ void print_entity(char *filename, int line, int column)
         exit(1);
     }
     printf("\e[%d;H", line);
-    printf("\e[%dC", (column * 25) * 2);
+    printf("\e[%dC", (column * 20) * 2);
     char character;
     while ((character = fgetc(file)) != EOF)
     {
@@ -71,7 +71,7 @@ void print_entity(char *filename, int line, int column)
         {
             printf("%c", character);
             if (column && (character == '\n' || character == '\r'))
-                printf("\e[%dC", (column * 25) * 2);
+                printf("\e[%dC", (column * 20) * 2);
         }
     }
     RESET_COLOR;

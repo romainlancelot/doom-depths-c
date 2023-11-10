@@ -1,10 +1,6 @@
 #ifndef SPELL_H
 #define SPELL_H
 
-#include "headers.h"
-#include "../entities/monsters.h"
-#include "../entities/player.h"
-
 typedef enum
 {
     HEAL,
@@ -29,6 +25,10 @@ typedef struct
     Spell **spells;
     int count;
 } Spells;
+
+#include "headers.h"
+#include "../entities/monsters.h"
+#include "../entities/player.h"
 
 Spell *create_spell(char *name, int power, int mana_cost, int cooldown, Spelltype type);
 Spell *create_random_spell();

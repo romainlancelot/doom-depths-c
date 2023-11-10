@@ -83,8 +83,8 @@ int main()
 
     Player *player = NULL;
     Monsters *monsters = NULL;
-    StuffList *stuff_list = create_random_stuff_list(STUFF_NUMBER);
-    Spells *spells = create_random_spell_list(3);
+    StuffList *stuff_list = create_random_stuff_list(SHOP_STUFF_NUMBER);
+    Spells *spells = NULL;
 
 choice:
     clear(MAIN_MENU_LINE);
@@ -104,6 +104,7 @@ choice:
         }
         player = create_player(player_count + 1);
         monsters = create_random_monster(rand() % 3 + 1);
+        spells = create_random_spell_list(DEFAULT_SPELL_NUMBER);
         break;
     case 9:
         clear(MAIN_MENU_LINE);
@@ -120,6 +121,7 @@ choice:
         }
         player = load_player(db, user_choice - 1);
         monsters = load_monsters(db, player->id);
+        spells = load_spells(db, player->id);
         break;
     }
     CLEAR_SCREEN;
@@ -203,7 +205,10 @@ game:
             case '0':
                 CLEAR_SCREEN;
                 if (user_choice == 1)
+                {
                     save(db, save_player(player));
+                    save(db, save_spells(spells, player->id));
+                }
                 else
                     save(db, update_player(player));
 
@@ -214,9 +219,6 @@ game:
                 // Save stuff in db
                 clear_stuff(db, player->id);
                 save(db, save_stuff(player));
-
-                // Save spells in db
-                save(db, save_spells(spells, player->id));
                 goto choice;
             }
         }

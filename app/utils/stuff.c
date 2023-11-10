@@ -251,7 +251,7 @@ void give_mana(Player *player)
 char *save_stuff(Player *player)
 {
     char *sql = malloc(sizeof(char) * 1000);
-    strcpy(sql, "INSERT INTO stuff (name, bonus, price, equipped, type, player_id) VALUES ");
+    strcpy(sql, "INSERT INTO stuffs (name, bonus, price, equipped, type, player_id) VALUES ");
     for (int i = 0; i < player->stuff_count; i++)
     {
         char *values = malloc(sizeof(char) * 100);

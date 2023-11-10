@@ -154,7 +154,7 @@ Player *load_player(sqlite3 *db, int id)
     int rc = sqlite3_exec(db, sql, _load_player, player, &err_msg);
     if (rc != SQLITE_OK)
         _handle_sql_error(db, err_msg, true);
-    sprintf(sql, "SELECT * FROM stuff WHERE player_id = %d", id);
+    sprintf(sql, "SELECT * FROM stuffs WHERE player_id = %d", id);
     rc = sqlite3_exec(db, sql, _load_player_stuff, player, &err_msg);
     if (rc != SQLITE_OK)
         _handle_sql_error(db, err_msg, true);
@@ -165,7 +165,7 @@ void clear_stuff(sqlite3 *db, int id)
 {
     char *err_msg = 0;
     char *sql = malloc(100 * sizeof(char));
-    sprintf(sql, "DELETE FROM stuff WHERE player_id = %d", id);
+    sprintf(sql, "DELETE FROM stuffs WHERE player_id = %d", id);
     int rc = sqlite3_exec(db, sql, NULL, NULL, &err_msg);
     if (rc != SQLITE_OK)
         _handle_sql_error(db, err_msg, true);
@@ -323,6 +323,8 @@ void delete_save(sqlite3 *db, int id)
     if (rc != SQLITE_OK)
         _handle_sql_error(db, err_msg, true);
     clear_monsters(db, id);
+    clear_stuff(db, id);
+    clear_spell(db, id);
 
     // Update player ids
     sprintf(sql, "UPDATE players SET id = id - 1 WHERE id > %d", id);
@@ -339,6 +341,45 @@ void delete_save(sqlite3 *db, int id)
     // Update SQLITE_SEQUENCE
     sprintf(sql, "UPDATE SQLITE_SEQUENCE SET seq = seq - 1 WHERE name = 'PLAYERS'");
     rc = sqlite3_exec(db, sql, NULL, NULL, &err_msg);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
+}
+
+static int _load_spells(Spells *spells, int argc, char **argv, char **columns)
+{
+    spells->spells = realloc(spells->spells, sizeof(Spell *) * (spells->count + 1));
+    Spell *spell = malloc(sizeof(Spell));
+    spell->name = malloc(sizeof(char) * (strlen(argv[1]) + 1));
+    strcpy(spell->name, argv[1]);
+    spell->type = atoi(argv[2]);
+    spell->power = atoi(argv[3]);
+    spell->mana_cost = atoi(argv[4]);
+    spell->cooldown = atoi(argv[5]);
+    spell->recharge = atoi(argv[6]);
+    spells->spells[spells->count++] = spell;
+    return 0;
+}
+
+Spells *load_spells(sqlite3 *db, int id)
+{
+    char *err_msg = 0;
+    char *sql = malloc(100 * sizeof(char));
+    Spells *spells = malloc(sizeof(Spells));
+    spells->count = 0;
+
+    sprintf(sql, "SELECT * FROM spells WHERE player_id = %d", id);
+    int rc = sqlite3_exec(db, sql, _load_spells, spells, &err_msg);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
+    return spells;
+}
+
+void clear_spell(sqlite3 *db, int id)
+{
+    char *err_msg = 0;
+    char *sql = malloc(100 * sizeof(char));
+    sprintf(sql, "DELETE FROM spells WHERE player_id = %d", id);
+    int rc = sqlite3_exec(db, sql, NULL, NULL, &err_msg);
     if (rc != SQLITE_OK)
         _handle_sql_error(db, err_msg, true);
 }

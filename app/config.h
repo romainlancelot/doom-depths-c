@@ -6,6 +6,7 @@
 #define HEALING_AMOUNT 20
 
 #define GOLD_ON_MONSTER_DEATH 50
-#define STUFF_NUMBER 3
+#define SHOP_STUFF_NUMBER 3
+#define DEFAULT_SPELL_NUMBER 5
 
 #endif

@@ -312,7 +312,7 @@ void recharge_spells(Spells *spells)
 char *save_spells(Spells *spells, int id)
 {
     char *sql = malloc(sizeof(char) * 1000);
-    strcpy(sql, "INSERT INTO spell (name, type, power, mana_cost, cooldown, recharge, player_id) VALUES ");
+    strcpy(sql, "INSERT INTO spells (name, type, power, mana_cost, cooldown, recharge, player_id) VALUES ");
     for (int i = 0; i < spells->count; i++)
     {
         char *values = malloc(sizeof(char) * 100);

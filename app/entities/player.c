@@ -90,6 +90,7 @@ void print_player_stats(Player *player)
                     printf("%s", str);
                     break;
                 }
+                free(str);
             }
         }
     }

@@ -206,11 +206,14 @@ game:
                 {
                     save(db, save_player(player));
                     save(db, save_monsters(monsters, player->id));
+                    save(db, save_stuff(player));
                     goto choice;
                 }
                 save(db, update_player(player));
                 clear_monsters(db, player->id);
                 save(db, save_monsters(monsters, player->id));
+                clear_stuff(db, player->id);
+                save(db, save_stuff(player));
                 goto choice;
             }
         }

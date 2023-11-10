@@ -19,7 +19,6 @@ void _log(char *message, int line)
     printf("\e[%d;H\e[2K", line);
     printf("%s", message);
     RESTORE_CURSOR;
-    fflush(stdout);
 }
 
 /**

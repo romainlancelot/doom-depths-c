@@ -13,11 +13,10 @@ typedef struct
 } StuffList;
 
 extern StuffList *create_random_stuff_list(int count);
-extern void print_stuff_list(StuffList *stuff_list);
-extern void print_player_stuff(Player *player);
 extern void remove_stuff(Player *player, int index);
 extern void buy_stuff(Player *player, StuffList *stuff_list);
 extern void equip_stuff(Player *player);
 extern void give_mana(Player *player);
+extern char *save_stuff(Player *player);
 
 #endif

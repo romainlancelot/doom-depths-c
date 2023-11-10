@@ -124,6 +124,20 @@ static int _load_player(Player *player, int argc, char **argv, char **columns)
     return 0;
 }
 
+static int _load_player_stuff(Player *player, int argc, char **argv, char **columns)
+{
+    player->stuff = realloc(player->stuff, sizeof(Stuff *) * (player->stuff_count + 1));
+    Stuff *stuff = malloc(sizeof(Stuff));
+    stuff->name = malloc(sizeof(char) * (strlen(argv[1]) + 1));
+    strcpy(stuff->name, argv[1]);
+    stuff->bonus = atoi(argv[2]);
+    stuff->price = atoi(argv[3]);
+    stuff->equipped = atoi(argv[4]);
+    stuff->type = atoi(argv[5]);
+    player->stuff[player->stuff_count++] = stuff;
+    return 0;
+}
+
 /**
  * Loads a player from the specified database with the given id.
  *
@@ -140,7 +154,21 @@ Player *load_player(sqlite3 *db, int id)
     int rc = sqlite3_exec(db, sql, _load_player, player, &err_msg);
     if (rc != SQLITE_OK)
         _handle_sql_error(db, err_msg, true);
+    sprintf(sql, "SELECT * FROM stuff WHERE player_id = %d", id);
+    rc = sqlite3_exec(db, sql, _load_player_stuff, player, &err_msg);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
     return player;
+}
+
+void clear_stuff(sqlite3 *db, int id)
+{
+    char *err_msg = 0;
+    char *sql = malloc(100 * sizeof(char));
+    sprintf(sql, "DELETE FROM stuff WHERE player_id = %d", id);
+    int rc = sqlite3_exec(db, sql, NULL, NULL, &err_msg);
+    if (rc != SQLITE_OK)
+        _handle_sql_error(db, err_msg, true);
 }
 
 /**

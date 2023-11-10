@@ -80,44 +80,37 @@ StuffList *create_random_stuff_list(int count)
     return stuff_list;
 }
 
-void print_stuff(Stuff *stuff)
+void print_stuff(Stuff **stuff, int count, bool show_price)
 {
-    printf("%s : ", stuff->name);
-    switch (stuff->type)
-    {
-    case ATTACK:
-        printf("Attack + %d", stuff->bonus);
-        break;
-    case DEFENSE:
-        printf("Defense + %d", stuff->bonus);
-        break;
-    case MANA:
-        printf("Mana + %d", stuff->bonus);
-        break;
-    }
-}
+    char *str = malloc(sizeof(char) * 100);
+    char *type = malloc(sizeof(char) * 100);
+    char *equipped = malloc(sizeof(char) * 100);
 
-void print_stuff_list(StuffList *stuff_list)
-{
-    for (int i = 0; i < STUFF_NUMBER; i++)
+    for (int i = 0; i < count; i++)
     {
-        printf("%d - ", i);
-        print_stuff(stuff_list->stuff[i]);
-        printf("\n");
-    }
-}
-
-void print_player_stuff(Player *player)
-{
-    for (int i = 0; i < player->stuff_count; i++)
-    {
-        printf("%d - ", i);
-        print_stuff(player->stuff[i]);
-        if (player->stuff[i]->equipped)
+        switch (stuff[i]->type)
         {
-            printf(" (equipped)");
+        case ATTACK:
+            strcpy(type, "Attack");
+            break;
+        case DEFENSE:
+            strcpy(type, "Defense");
+            break;
+        case MANA:
+            strcpy(type, "Mana");
+            break;
         }
-        printf("\n");
+
+        if (stuff[i]->equipped && stuff[i]->type != MANA)
+            strcpy(equipped, "(equiped)");
+        else
+            strcpy(equipped, "");
+
+        if (show_price)
+            sprintf(str, "%d - %s : %s + %d (%d gold)\n", i + 1, stuff[i]->name, type, stuff[i]->bonus, stuff[i]->price);
+        else
+            sprintf(str, "%d - %s : %s + %d %s\n", i + 1, stuff[i]->name, type, stuff[i]->bonus, equipped);
+        printf("%s", str);
     }
 }
 
@@ -141,43 +134,38 @@ void remove_stuff(Player *player, int index)
 void buy_stuff(Player *player, StuffList *stuff_list)
 {
     printf("Which stuff do you want to buy ?\n\n");
-    print_stuff_list(stuff_list);
-    printf("\nPress 'b' to go back.\n");
+    print_stuff(stuff_list->stuff, stuff_list->stuff_count, 1);
+    printf("\n%d - Back \n", stuff_list->stuff_count + 1);
 
     char user_input;
     while (true)
     {
         if (read(STDIN_FILENO, &user_input, 1) == 1)
         {
-            if (user_input == 'b')
+            int choice = atoi(&user_input);
+            if (choice == stuff_list->stuff_count + 1)
                 return;
-
-            int stuff_index = atoi(&user_input);
-            if (stuff_index < 0 || stuff_index > STUFF_NUMBER)
-            {
-                _log("This stuff doesn't exist !\n", GAME_LOG_LINE);
+            else if (choice < 1 || choice > stuff_list->stuff_count)
                 continue;
+            choice--;
+
+            Stuff *stuff = stuff_list->stuff[choice];
+            if (player->gold >= stuff->price)
+            {
+                player->gold -= stuff->price;
+                player->stuff_count++;
+                player->stuff = realloc(player->stuff, sizeof(Stuff *) * player->stuff_count);
+                player->stuff[player->stuff_count - 1] = stuff;
+
+                char *str = malloc(sizeof(char) * 100);
+                sprintf(str, "You bought %s !\n", stuff->name);
+                _log(str, GAME_LOG_LINE);
+                return;
             }
             else
             {
-                Stuff *stuff = stuff_list->stuff[stuff_index];
-                if (player->gold >= stuff->price)
-                {
-                    player->gold -= stuff->price;
-                    player->stuff_count++;
-                    player->stuff = realloc(player->stuff, sizeof(Stuff *) * player->stuff_count);
-                    player->stuff[player->stuff_count - 1] = stuff;
-
-                    char *str = malloc(sizeof(char) * 100);
-                    sprintf(str, "You bought %s !\n", stuff->name);
-                    _log(str, GAME_LOG_LINE);
-                    return;
-                }
-                else
-                {
-                    _log("You don't have enough gold to buy this stuff !\n", GAME_LOG_LINE);
-                    return;
-                }
+                _log("You don't have enough gold to buy this stuff !\n", GAME_LOG_LINE);
+                return;
             }
         }
     }
@@ -191,50 +179,62 @@ void equip_stuff(Player *player)
         return;
     }
 
-    printf("Which stuff do you want to equip ?\n\n");
-    print_player_stuff(player);
-    printf("\nPress any other key to go back.\n");
+    printf("Which stuff do you want to equip/use ?\n\n");
+    print_stuff(player->stuff, player->stuff_count, 0);
+    printf("\n%d - Back\n", player->stuff_count + 1);
+
     char user_input;
-    if (read(STDIN_FILENO, &user_input, 1) == 1)
+    while (true)
     {
-        GOTO_LOG;
-        int choice = atoi(&user_input);
-        if (choice < 0 || choice >= player->stuff_count)
+        if (read(STDIN_FILENO, &user_input, 1) == 1)
         {
-            printf("Invalid choice !");
-            return;
-        }
-        if (player->stuff[choice]->equipped)
-        {
-            printf("This stuff is already equipped !");
-            return;
-        }
-        if (player->stuff[choice]->type == MANA)
-        {
-            if (player->current_mana == player->max_mana)
+            int choice = atoi(&user_input);
+            if (choice == player->stuff_count + 1)
+                return;
+            else if (choice < 1 || choice > player->stuff_count)
+                continue;
+            choice--;
+
+            Stuff *stuff = player->stuff[choice];
+            if (stuff->type == MANA)
             {
-                printf("You already have full mana !");
+                if (player->current_mana == player->max_mana)
+                {
+                    _log("You already have full mana !", GAME_LOG_LINE);
+                    return;
+                }
+                player->current_mana += stuff->bonus;
+                if (player->current_mana > player->max_mana)
+                    player->current_mana = player->max_mana;
+                char *str = malloc(sizeof(char) * 100);
+                sprintf(str, "You drank a mana potion and restored %d mana points !", stuff->bonus);
+                _log(str, GAME_LOG_LINE);
+                remove_stuff(player, choice);
                 return;
             }
-            player->current_mana += player->stuff[choice]->bonus;
-            if (player->current_mana > player->max_mana)
-                player->current_mana = player->max_mana;
-            printf("You drank a mana potion and restored %d mana points !", player->stuff[choice]->bonus);
-            remove_stuff(player, choice);
+
+            if (stuff->equipped)
+            {
+                _log("This stuff is already equipped !\n", GAME_LOG_LINE);
+                continue;
+            }
+            for (int i = 0; i < player->stuff_count; i++)
+            {
+                if (player->stuff[i]->equipped && player->stuff[i]->type == stuff->type)
+                {
+                    player->stuff[i]->equipped = false;
+                    char *str = malloc(sizeof(char) * 100);
+                    sprintf(str, "You unequipped %s. ", player->stuff[i]->name);
+                    _log(str, GAME_LOG_LINE);
+                    break;
+                }
+            }
+            stuff->equipped = true;
+            char *str = malloc(sizeof(char) * 100);
+            sprintf(str, "You equipped %s !", stuff->name);
+            _log(str, GAME_LOG_LINE);
             return;
         }
-        for (int i = 0; i < player->stuff_count; i++)
-        {
-            if (player->stuff[i]->equipped && player->stuff[i]->type == player->stuff[choice]->type)
-            {
-                player->stuff[i]->equipped = false;
-                printf("You unequipped %s. ", player->stuff[i]->name);
-                break;
-            }
-        }
-        player->stuff[choice]->equipped = true;
-        printf("You equipped %s !", player->stuff[choice]->name);
-        fflush(stdout);
     }
 }
 
@@ -246,4 +246,21 @@ void give_mana(Player *player)
     player->stuff = realloc(player->stuff, sizeof(Stuff *) * player->stuff_count);
     player->stuff[player->stuff_count - 1] = mana_stuff;
     printf(" You found a mana potion !\n");
+}
+
+char *save_stuff(Player *player)
+{
+    char *sql = malloc(sizeof(char) * 1000);
+    strcpy(sql, "INSERT INTO stuff (name, bonus, price, equipped, type, player_id) VALUES ");
+    for (int i = 0; i < player->stuff_count; i++)
+    {
+        char *values = malloc(sizeof(char) * 100);
+        sprintf(values, "('%s', %d, %d, %d, %d, %d)", player->stuff[i]->name, player->stuff[i]->bonus, player->stuff[i]->price, player->stuff[i]->equipped, player->stuff[i]->type, player->id);
+        strcat(sql, values);
+        if (i < player->stuff_count - 1)
+            strcat(sql, ",");
+        free(values);
+    }
+    strcat(sql, ";");
+    return sql;
 }

@@ -245,7 +245,7 @@ void give_mana_potion_stuff(Player *player)
     player->stuff_count++;
     player->stuff = realloc(player->stuff, sizeof(Stuff *) * player->stuff_count);
     player->stuff[player->stuff_count - 1] = mana_stuff;
-    printf(" You found a mana potion !");
+    printf("You found a mana potion ! ");
 }
 
 char *save_stuff(Player *player)

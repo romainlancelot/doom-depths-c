@@ -27,7 +27,7 @@ Player *create_player(int id)
     // Stats
     player->attack_power = DEFAULT_ATTACK_POWER;
     player->experience = 0;
-    player->level = 0;
+    player->level = 1;
     player->level_up_experience = DEFAULT_LEVEL_UP_EXPERIENCE;
     player->defense = DEFAULT_DEFENSE;
     player->gold = 0;
@@ -149,9 +149,7 @@ void manage_player_level(Player *player)
         player->current_mana = player->max_mana;
         player->attack_power += 5;
         player->defense += 5;
-        GOTO_LOG;
         printf("You leveled up !\n");
-        fflush(stdout);
     }
 }
 
@@ -165,6 +163,6 @@ void give_exp(Player *player, int monster_max_health)
 {
     int exp = monster_max_health / 2;
     player->experience += exp;
-    printf("You gained %d experience points !\n", exp);
+    printf("You gained %d experience points ! ", exp);
     manage_player_level(player);
 }

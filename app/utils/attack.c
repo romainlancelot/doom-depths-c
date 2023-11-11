@@ -39,7 +39,7 @@ void attack_monster(Monster *monster, Player *player)
         total_damage = 0;
     monster->current_health -= total_damage;
     player->attack_left--;
-    printf("You dealt %d damage to %s !", total_damage, monster->name);
+    printf("You dealt %d damage to %s ! ", total_damage, monster->name);
 }
 
 /**

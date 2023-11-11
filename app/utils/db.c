@@ -367,7 +367,7 @@ Spells *load_spells(sqlite3 *db, int id)
     char *sql = malloc(100 * sizeof(char));
     Spells *spells = malloc(sizeof(Spells));
     spells->count = 0;
-
+    spells->spells = malloc(sizeof(Spell *));
     sprintf(sql, "SELECT * FROM spells WHERE player_id = %d", id);
     int rc = sqlite3_exec(db, sql, _load_spells, spells, &err_msg);
     if (rc != SQLITE_OK)

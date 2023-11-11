@@ -118,16 +118,16 @@ void heal_player(Player *player, int amount)
 char *save_player(Player *player)
 {
     char *sql = malloc(1000 * sizeof(char));
-    char *base = "INSERT INTO players (current_health, max_health, current_mana, max_mana, gold, experience, level, defense, attack_power, attack_left, potion_counter) VALUES";
-    sprintf(sql, "%s (%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d);", base, player->current_health, player->max_health, player->current_mana, player->max_mana, player->gold, player->experience, player->level, player->defense, player->attack_power, player->attack_left, player->potion_counter);
+    char *base = "INSERT INTO players (current_health, max_health, current_mana, max_mana, gold, experience, level, level_up_experience, defense, attack_power, attack_left, potion_counter) VALUES";
+    sprintf(sql, "%s (%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d);", base, player->current_health, player->max_health, player->current_mana, player->max_mana, player->gold, player->experience, player->level, player->level_up_experience, player->defense, player->attack_power, player->attack_left, player->potion_counter);
     return sql;
 }
 
 char *update_player(Player *player)
 {
     char *sql = malloc(1000 * sizeof(char));
-    char *base = "UPDATE players SET current_health = %d, max_health = %d, current_mana = %d, max_mana = %d, gold = %d, experience = %d, level = %d, defense = %d, attack_power = %d, attack_left = %d, potion_counter = %d WHERE id = %d;";
-    sprintf(sql, base, player->current_health, player->max_health, player->current_mana, player->max_mana, player->gold, player->experience, player->level, player->defense, player->attack_power, player->attack_left, player->potion_counter, player->id);
+    char *base = "UPDATE players SET current_health = %d, max_health = %d, current_mana = %d, max_mana = %d, gold = %d, experience = %d, level = %d, level_up_experience = %d, defense = %d, attack_power = %d, attack_left = %d, potion_counter = %d WHERE id = %d;";
+    sprintf(sql, base, player->current_health, player->max_health, player->current_mana, player->max_mana, player->gold, player->experience, player->level, player->level_up_experience, player->defense, player->attack_power, player->attack_left, player->potion_counter, player->id);
     return sql;
 }
 

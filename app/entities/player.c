@@ -28,6 +28,7 @@ Player *create_player(int id)
     player->attack_power = DEFAULT_ATTACK_POWER;
     player->experience = 0;
     player->level = 1;
+    player->level_up_experience = DEFAULT_LEVEL_UP_EXPERIENCE;
     player->defense = DEFAULT_DEFENSE;
     player->gold = 0;
     player->attack_left = ATTACK_NUMBER;
@@ -96,7 +97,12 @@ void print_player_stats(Player *player)
     }
     printf("\n");
     _print_stat_bar("  Mana", player->current_mana, player->max_mana, "\e[0;34m", true);
-    printf("  Gold \e[0;33m%d\e[0m\n", player->gold);
+    printf("  Gold \e[0;33m%d\e[0m", player->gold);
+    printf("    |  ");
+    printf("  Level \e[0;32m%d\e[0m", player->level);
+    printf("    |  ");
+    printf("  Experience \e[0;35m%d/%d\e[0m", player->experience, player->level_up_experience);
+    printf("\n");
 }
 
 void heal_player(Player *player, int amount)
@@ -112,15 +118,51 @@ void heal_player(Player *player, int amount)
 char *save_player(Player *player)
 {
     char *sql = malloc(1000 * sizeof(char));
-    char *base = "INSERT INTO players (current_health, max_health, current_mana, max_mana, gold, experience, level, defense, attack_power, attack_left, potion_counter) VALUES";
-    sprintf(sql, "%s (%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d);", base, player->current_health, player->max_health, player->current_mana, player->max_mana, player->gold, player->experience, player->level, player->defense, player->attack_power, player->attack_left, player->potion_counter);
+    char *base = "INSERT INTO players (current_health, max_health, current_mana, max_mana, gold, experience, level, level_up_experience, defense, attack_power, attack_left, potion_counter) VALUES";
+    sprintf(sql, "%s (%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d);", base, player->current_health, player->max_health, player->current_mana, player->max_mana, player->gold, player->experience, player->level, player->level_up_experience, player->defense, player->attack_power, player->attack_left, player->potion_counter);
     return sql;
 }
 
 char *update_player(Player *player)
 {
     char *sql = malloc(1000 * sizeof(char));
-    char *base = "UPDATE players SET current_health = %d, max_health = %d, current_mana = %d, max_mana = %d, gold = %d, experience = %d, level = %d, defense = %d, attack_power = %d, attack_left = %d, potion_counter = %d WHERE id = %d;";
-    sprintf(sql, base, player->current_health, player->max_health, player->current_mana, player->max_mana, player->gold, player->experience, player->level, player->defense, player->attack_power, player->attack_left, player->potion_counter, player->id);
+    char *base = "UPDATE players SET current_health = %d, max_health = %d, current_mana = %d, max_mana = %d, gold = %d, experience = %d, level = %d, level_up_experience = %d, defense = %d, attack_power = %d, attack_left = %d, potion_counter = %d WHERE id = %d;";
+    sprintf(sql, base, player->current_health, player->max_health, player->current_mana, player->max_mana, player->gold, player->experience, player->level, player->level_up_experience, player->defense, player->attack_power, player->attack_left, player->potion_counter, player->id);
     return sql;
+}
+
+/**
+ * @brief Manages the level of the player.
+ * 
+ * @param player The player to manage the level of.
+ */
+void manage_player_level(Player *player)
+{
+    if (player->experience >= player->level_up_experience)
+    {
+        player->experience -= player->level_up_experience;
+        player->level++;
+        player->level_up_experience += 10;
+        player->max_health += 10;
+        player->current_health = player->max_health;
+        player->max_mana += 5;
+        player->current_mana = player->max_mana;
+        player->attack_power += 5;
+        player->defense += 5;
+        printf("You leveled up !\n");
+    }
+}
+
+/**
+ * @brief Gives experience points to the player based on the maximum health of a defeated monster.
+ * 
+ * @param player Pointer to the player struct.
+ * @param monster_max_health Maximum health of the defeated monster.
+ */
+void give_exp(Player *player, int monster_max_health)
+{
+    int exp = monster_max_health / 2;
+    player->experience += exp;
+    printf("You gained %d experience points ! ", exp);
+    manage_player_level(player);
 }

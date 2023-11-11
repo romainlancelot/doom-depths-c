@@ -39,7 +39,7 @@ void attack_monster(Monster *monster, Player *player)
         total_damage = 0;
     monster->current_health -= total_damage;
     player->attack_left--;
-    printf("You dealt %d damage to %s !", total_damage, monster->name);
+    printf("You dealt %d damage to %s ! ", total_damage, monster->name);
 }
 
 /**
@@ -75,7 +75,8 @@ void manage_player_attack(Monsters *monsters, Player *player, bool *print_entiti
             {
                 remove_monster(monsters, monster);
                 player->gold += GOLD_ON_MONSTER_DEATH;
-                give_mana(player);
+                give_mana_potion_stuff(player);
+                give_exp(player, monster->max_health);
                 *print_entities = true;
             }
             break;

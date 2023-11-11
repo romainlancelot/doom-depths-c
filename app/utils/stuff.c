@@ -296,14 +296,14 @@ void equip_stuff(Player *player)
  * 
  * @param player The player to give mana to.
  */
-void give_mana(Player *player)
+void give_mana_potion_stuff(Player *player)
 {
     int mana_value = rand() % 10 + 10;
     Stuff *mana_stuff = create_stuff(MANA, "Mana potion", mana_value, 0);
     player->stuff_count++;
     player->stuff = realloc(player->stuff, sizeof(Stuff *) * player->stuff_count);
     player->stuff[player->stuff_count - 1] = mana_stuff;
-    printf(" You found a mana potion !\n");
+    printf("You found a mana potion ! ");
 }
 
 /**

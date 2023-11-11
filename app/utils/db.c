@@ -114,10 +114,11 @@ static int _load_player(Player *player, int argc, char **argv, char **columns)
     player->gold = atoi(argv[5]);
     player->experience = atoi(argv[6]);
     player->level = atoi(argv[7]);
-    player->defense = atoi(argv[8]);
-    player->attack_power = atoi(argv[9]);
-    player->attack_left = atoi(argv[10]);
-    player->potion_counter = atoi(argv[11]);
+    player->level_up_experience = atoi(argv[8]);
+    player->defense = atoi(argv[9]);
+    player->attack_power = atoi(argv[10]);
+    player->attack_left = atoi(argv[11]);
+    player->potion_counter = atoi(argv[12]);
     player->stuff_count = 0;
     player->stuff = malloc(sizeof(Stuff *));
 
@@ -366,7 +367,7 @@ Spells *load_spells(sqlite3 *db, int id)
     char *sql = malloc(100 * sizeof(char));
     Spells *spells = malloc(sizeof(Spells));
     spells->count = 0;
-
+    spells->spells = malloc(sizeof(Spell *));
     sprintf(sql, "SELECT * FROM spells WHERE player_id = %d", id);
     int rc = sqlite3_exec(db, sql, _load_spells, spells, &err_msg);
     if (rc != SQLITE_OK)

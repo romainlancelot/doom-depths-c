@@ -99,7 +99,7 @@ void print_monsters_list(Monsters *monsters)
  */
 void remove_monster(Monsters *monsters, Monster *monster)
 {
-    printf(" You killed %s !", monster->name);
+    printf("You killed %s ! ", monster->name);
     monsters->count--;
     Monster **alive_monsters = malloc(sizeof(Monster *) * monsters->count);
 

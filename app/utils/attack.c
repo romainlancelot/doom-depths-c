@@ -75,7 +75,8 @@ void manage_player_attack(Monsters *monsters, Player *player, bool *print_entiti
             {
                 remove_monster(monsters, monster);
                 player->gold += GOLD_ON_MONSTER_DEATH;
-                give_mana(player);
+                give_mana_potion_stuff(player);
+                give_exp(player, monster->max_health);
                 *print_entities = true;
             }
             break;

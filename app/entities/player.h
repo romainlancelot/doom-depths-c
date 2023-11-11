@@ -28,6 +28,7 @@ typedef struct
     int gold;
     int experience;
     int level;
+    int level_up_experience;
     int defense;
     int attack_power;
     int attack_left;
@@ -42,5 +43,6 @@ extern void print_player_stats(Player *player);
 extern void heal_player(Player *player, int amount);
 extern char *save_player(Player *player);
 extern char *update_player(Player *player);
+extern void give_exp(Player *player, int monster_max_health);
 
 #endif // PLAYER

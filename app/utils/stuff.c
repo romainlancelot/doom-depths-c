@@ -6,16 +6,31 @@
 
 #include "stuff.h"
 
-int stuff_attacks_count = 2;
+int stuff_attacks_count = 4;
 char *stuff_attacks_names[] = {
     "Sword",
-    "Axe"};
+    "Axe",
+    "Bow",
+    "Dagger"
+};
 
-int stuff_defenses_count = 2;
+int stuff_defenses_count = 3;
 char *stuff_defenses_names[] = {
     "Shield",
-    "Armor"};
+    "Armor",
+    "Helmet"
+};
 
+
+/**
+ * @brief Creates a new Stuff object with the given parameters.
+ * 
+ * @param type The type of the Stuff.
+ * @param name The name of the Stuff.
+ * @param bonus The bonus of the Stuff.
+ * @param price The price of the Stuff.
+ * @return Stuff* A pointer to the newly created Stuff object.
+ */
 Stuff *create_stuff(StuffType type, char *name, int bonus, int price)
 {
     Stuff *stuff = malloc(sizeof(Stuff));
@@ -28,6 +43,14 @@ Stuff *create_stuff(StuffType type, char *name, int bonus, int price)
     return stuff;
 }
 
+/**
+ * @brief Creates a list of random stuff.
+ * 
+ * @param count The number of stuff to generate.
+ * @return StuffList* A pointer to the generated list of stuff.
+ * 
+ * @note The caller is responsible for freeing the memory allocated for the list.
+ */
 StuffList *create_random_stuff_list(int count)
 {
     StuffList *stuff_list = malloc(sizeof(StuffList));
@@ -80,6 +103,13 @@ StuffList *create_random_stuff_list(int count)
     return stuff_list;
 }
 
+/**
+ * @brief Prints an array of Stuff objects.
+ * 
+ * @param stuff An array of pointers to Stuff objects.
+ * @param count The number of elements in the array.
+ * @param show_price A boolean indicating whether to print the price of each Stuff object.
+ */
 void print_stuff(Stuff **stuff, int count, bool show_price)
 {
     char *str = malloc(sizeof(char) * 100);
@@ -114,12 +144,23 @@ void print_stuff(Stuff **stuff, int count, bool show_price)
     }
 }
 
+/**
+ * @brief Frees the memory allocated for a Stuff struct.
+ * 
+ * @param stuff Pointer to the Stuff struct to be destroyed.
+ */
 void destroy_stuff(Stuff *stuff)
 {
     free(stuff->name);
     free(stuff);
 }
 
+/**
+ * @brief Removes an item from the player's inventory.
+ * 
+ * @param player Pointer to the player struct.
+ * @param index Index of the item to remove.
+ */
 void remove_stuff(Player *player, int index)
 {
     destroy_stuff(player->stuff[index]);
@@ -131,6 +172,12 @@ void remove_stuff(Player *player, int index)
     player->stuff = realloc(player->stuff, sizeof(Stuff *) * player->stuff_count);
 }
 
+/**
+ * @brief Allows the player to buy stuff from the stuff list.
+ * 
+ * @param player Pointer to the player struct.
+ * @param stuff_list Pointer to the stuff list struct.
+ */
 void buy_stuff(Player *player, StuffList *stuff_list)
 {
     printf("Which stuff do you want to buy ?\n\n");
@@ -171,6 +218,12 @@ void buy_stuff(Player *player, StuffList *stuff_list)
     }
 }
 
+
+/**
+ * Equip the player with various items and equipment.
+ *
+ * @param player A pointer to the player object to equip.
+ */
 void equip_stuff(Player *player)
 {
     if (player->stuff_count == 0)
@@ -238,6 +291,11 @@ void equip_stuff(Player *player)
     }
 }
 
+/**
+ * @brief Gives mana to a player.
+ * 
+ * @param player The player to give mana to.
+ */
 void give_mana(Player *player)
 {
     int mana_value = rand() % 10 + 10;
@@ -248,6 +306,12 @@ void give_mana(Player *player)
     printf(" You found a mana potion !\n");
 }
 
+/**
+ * Saves the player's stuff.
+ * 
+ * @param player The player whose stuff will be saved.
+ * @return A pointer to the saved stuff.
+ */
 char *save_stuff(Player *player)
 {
     char *sql = malloc(sizeof(char) * 1000);

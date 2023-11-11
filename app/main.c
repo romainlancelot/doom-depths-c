@@ -85,6 +85,7 @@ int main()
     Monsters *monsters = NULL;
     StuffList *stuff_list = create_random_stuff_list(SHOP_STUFF_NUMBER);
     Spells *spells = NULL;
+    int currentLevel = 1;
 
 choice:
     clear(MAIN_MENU_LINE);
@@ -129,9 +130,46 @@ choice:
 game:
     bool print_entities = true;
 
+
     char user_input;
     while (player->current_health > 0)
     {
+
+        if(monsters->count < 1){
+            player->attack_left = ATTACK_NUMBER;
+            currentLevel++;
+            GOTO_LOG;
+            printf("\nTravelling to level %d. ", currentLevel);
+            if(rand() % 2){
+                int gold = rand() % 29 + 1;
+                int lost_hp = rand() % 14 + 1;
+                int mana_gain = rand() % 49 + 1;
+                switch (rand() % 3) {
+                    case 0:
+                        printf("You found %d gold on you way to the next level!", gold);
+                        player->gold += gold;
+                        break;
+                    case 1:
+                        printf("You stumpled on a trap and lost %d HP", lost_hp);
+                        player->current_health -= lost_hp;
+                        break;
+                    case 2:
+                        printf("You stumble accros a mana fountain and gain %d MP", mana_gain);
+                        player->current_mana += mana_gain;
+                        break;
+                }
+            }
+            printf("\nPress a key to continue.");
+            char user_input;
+            if (read(STDIN_FILENO, &user_input, 1) == 1){
+                if(currentLevel%5){
+                    monsters = create_random_monster(rand() % 3 + 1);
+                } else{
+                    monsters = create_random_champion(1);
+                }
+            }
+        }
+
         print_player_stats(player);
         if (print_entities)
         {
@@ -222,6 +260,8 @@ game:
                 goto choice;
             }
         }
+
+
     }
 
 end:

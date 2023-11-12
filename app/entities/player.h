@@ -32,6 +32,7 @@ typedef struct
     int attack_power;
     int attack_left;
     int potion_counter;
+    int stage;
     Stuff **stuff;
     int stuff_count;
 } Player;

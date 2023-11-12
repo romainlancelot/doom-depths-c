@@ -64,11 +64,11 @@ Monsters *create_random_monster(int count)
  */
 Monsters *create_random_champion(int count)
 {
-    char *names[] = {"darkangel champion", "griffon champion", "grimreaper champion", "dragon champion"};
+    char *names[] = {"skeleton", "phoenix"};
     Monster **monsters = malloc(sizeof(Monster *) * count);
     for (int i = 0; i < count; i++)
     {
-        char *name = names[rand() % 4];
+        char *name = names[rand() % 1];
         monsters[i] = create_monster(name, rand() % 300, rand() % 25, rand() % 50, rand() % 20);
     }
 

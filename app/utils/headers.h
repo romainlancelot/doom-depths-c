@@ -27,5 +27,6 @@
 #define WAIT_FOR_POTION 6
 #define HEALING_AMOUNT 20
 #define MAX_SAVE 3
+#define MAX_STUFF 7
 
 #endif // DEF_HEADER_DISPLAY_STANDARS

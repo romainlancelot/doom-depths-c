@@ -103,6 +103,8 @@ void print_player_stats(Player *player)
     printf("  Level \e[0;32m%d\e[0m", player->level);
     printf("    |  ");
     printf("  Experience \e[0;35m%d/%d\e[0m", player->experience, player->level_up_experience);
+    printf("    |  ");
+    printf("  Stage \e[0;36m%d\e[0m", player->stage);
     printf("\n");
 }
 

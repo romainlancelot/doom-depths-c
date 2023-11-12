@@ -76,25 +76,6 @@ Spell *create_random_spell()
 /**
  * Creates an array of random spells with the given count.
  *
- * @return A pointer to the newly created Spells struct.
- * @note The spell list contains 3 basic spells, 1 heal, 1 targeted and 1 area of effect.
- */
-Spells *create_base_spell_list()
-{
-    Spell **spells = malloc(sizeof(Spell *) * 3);
-    spells[0] = create_spell("Fireball", rand() % 50, rand() % 30 + 10, rand() % 15 + 1, DAMAGE);
-    spells[1] = create_spell("Meteor", rand() % 50, rand() % 30 + 10, rand() % 15 + 1, DAMAGE_AOE);
-    spells[2] = create_spell("Heal", rand() % 50, rand() % 30 + 10, rand() % 15 + 1, HEAL);
-
-    Spells *spell_list = malloc(sizeof(Spells));
-    spell_list->spells = spells;
-    spell_list->count = 3;
-    return spell_list;
-}
-
-/**
- * Creates an array of random spells with the given count.
- *
  * @param count The number of spells to create.
  * @return A pointer to the newly created Spells struct.
  * @note The spell list contains 3 basic spells, 1 heal, 1 targeted and 1 area of effect.
@@ -104,7 +85,16 @@ Spells *create_random_spell_list(int count)
     Spell **spells = malloc(sizeof(Spell *) * count);
     for (int i = 0; i < count; i++)
     {
-        spells[i] = create_random_spell();
+        Spell *spell = create_random_spell();
+        for (int j = 0; j < i; j++)
+        {
+            if (strcmp(spell->name, spells[j]->name) == 0)
+            {
+                i--;
+                break;
+            }
+        }
+        spells[i] = spell;
     }
 
     Spells *spell_list = malloc(sizeof(Spells));

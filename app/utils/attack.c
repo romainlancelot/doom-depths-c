@@ -113,7 +113,7 @@ void attack_player(Player *player, Monster *monster)
         }
     }
     player->current_health -= total_damage;
-    printf("%s dealt %d damage to you ! Press a key to continue", monster->name, total_damage);
+    printf("%c%s dealt %d damage to you ! Press a key to continue", toupper(monster->name[0]), monster->name+1, total_damage);
     print_player_stats(player);
     RESTORE_CURSOR;
     fflush(stdout);

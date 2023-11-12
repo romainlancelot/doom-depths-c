@@ -196,6 +196,12 @@ void buy_stuff(Player *player, StuffList *stuff_list)
                 continue;
             choice--;
 
+            if (player->stuff_count >= MAX_STUFF)
+            {
+                _log("You can't carry more stuff !\n", GAME_LOG_LINE);
+                return;
+            }
+
             Stuff *stuff = stuff_list->stuff[choice];
             if (player->gold >= stuff->price)
             {
@@ -234,7 +240,8 @@ void equip_stuff(Player *player)
 
     printf("Which stuff do you want to equip/use ?\n\n");
     print_stuff(player->stuff, player->stuff_count, 0);
-    printf("\n%d - Back\n", player->stuff_count + 1);
+    printf("\n%d - Delete stuff\n\n", player->stuff_count + 1);
+    printf("%d - Back\n", player->stuff_count + 2);
 
     char user_input;
     while (true)
@@ -242,8 +249,13 @@ void equip_stuff(Player *player)
         if (read(STDIN_FILENO, &user_input, 1) == 1)
         {
             int choice = atoi(&user_input);
-            if (choice == player->stuff_count + 1)
+            if (choice == player->stuff_count + 2)
                 return;
+            else if (choice == player->stuff_count + 1)
+            {
+                delete_stuff(player);
+                return;
+            }
             else if (choice < 1 || choice > player->stuff_count)
                 continue;
             choice--;
@@ -291,6 +303,35 @@ void equip_stuff(Player *player)
     }
 }
 
+void delete_stuff(Player *player)
+{
+    clear(GAME_MENU_LINE);
+    printf("Which stuff do you want to delete ?\n\n");
+    print_stuff(player->stuff, player->stuff_count, 0);
+    printf("\n%d - Back\n", player->stuff_count + 1);
+
+    char user_input;
+    while (true)
+    {
+        if (read(STDIN_FILENO, &user_input, 1) == 1)
+        {
+            int choice = atoi(&user_input);
+            if (choice == player->stuff_count + 1)
+                return;
+            else if (choice < 1 || choice > player->stuff_count)
+                continue;
+            choice--;
+
+            Stuff *stuff = player->stuff[choice];
+            char *str = malloc(sizeof(char) * 100);
+            sprintf(str, "You deleted %s !", stuff->name);
+            _log(str, GAME_LOG_LINE);
+            remove_stuff(player, choice);
+            return;
+        }
+    }
+}
+
 /**
  * @brief Gives mana to a player.
  * 
@@ -298,6 +339,11 @@ void equip_stuff(Player *player)
  */
 void give_mana_potion_stuff(Player *player)
 {
+    if (player->stuff_count >= MAX_STUFF)
+    {
+        printf("You have found a mana potion but you can't carry it ! ");
+        return;
+    }
     int mana_value = rand() % 10 + 10;
     Stuff *mana_stuff = create_stuff(MANA, "Mana potion", mana_value, 0);
     player->stuff_count++;

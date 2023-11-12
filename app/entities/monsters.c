@@ -56,6 +56,29 @@ Monsters *create_random_monster(int count)
 }
 
 /**
+ * Creates an array of random monsters with the given count.
+ *
+ * @param count The number of champion to create.
+ * @return A pointer to the newly created Monsters struct.
+ * @note The created monsters have random names, health, attack, defense, and speed.
+ */
+Monsters *create_random_champion(int count)
+{
+    char *names[] = {"skeleton", "phoenix"};
+    Monster **monsters = malloc(sizeof(Monster *) * count);
+    for (int i = 0; i < count; i++)
+    {
+        char *name = names[rand() % 1];
+        monsters[i] = create_monster(name, rand() % 300, rand() % 25, rand() % 50, rand() % 20);
+    }
+
+    Monsters *monsters_list = malloc(sizeof(Monsters));
+    monsters_list->monsters = monsters;
+    monsters_list->count = count;
+    return monsters_list;
+}
+
+/**
  * Frees the memory allocated for an array of Monster pointers and their names.
  *
  * @param monsters The Monsters struct to free.

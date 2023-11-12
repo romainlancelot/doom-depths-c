@@ -175,9 +175,30 @@ int handle_death_menu()
  * Handles the win state of the game by printing the win menu and prompting the user for input.
  * @return true if the user chooses to take loot and go to the next room, false if the user chooses to quit.
  */
-int handle_win_menu()
+int handle_win_menu(Player *player)
 {
     _print_menu("ui/resources/win.txt");
-    printf("\n\n\n1 - Take loot and go to next room\n0 - Quit\n");
+    if(rand() % 2)
+    {
+        int gold = rand() % 29 + 1;
+        int lost_hp = rand() % 14 + 1;
+        int mana_gain = rand() % 49 + 1;
+        switch (rand() % 3) {
+            case 0:
+                printf("\n\nYou found %d gold on you way to the next stage!", gold);
+                player->gold += gold;
+                break;
+            case 1:
+                printf("\n\nYou stumpled on a trap and lost %d HP", lost_hp);
+                player->current_health -= lost_hp;
+                break;
+            case 2:
+                printf("\n\nYou stumble accros a mana fountain and gain %d MP", mana_gain);
+                player->current_mana += mana_gain;
+                break;
+        }
+    }
+
+    printf("\n\n\nPress any key to go to stage %d.\n", player->stage);
     return _handle_user_input();
 }

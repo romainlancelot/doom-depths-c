@@ -289,7 +289,7 @@ void clear_monsters(sqlite3 *db, int id)
  */
 static int _load_all_save(void *data, int argc, char **argv, char **columns)
 {
-    printf("%d - Load player level %s: health: %s/%s, mana: %s/%s, gold: %s\n", atoi(argv[0]) + 1, argv[7], argv[1], argv[2], argv[3], argv[4], argv[5]);
+    printf("%d - Load player level: %s, stage: %s, health: %s/%s, mana: %s/%s, gold: %s\n", atoi(argv[0]) + 1, argv[7], argv[13], argv[1], argv[2], argv[3], argv[4], argv[5]);
     return 0;
 }
 

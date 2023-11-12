@@ -11,6 +11,7 @@
 extern int handle_start_menu(sqlite3 *db);
 extern int handle_death_menu();
 extern int handle_delete_save_menu(sqlite3 *db);
+extern int handle_win_menu(Player *player);
 extern void _log(char *message, int line);
 extern void clear(int line);
 extern void print_entity(char *filename, int line, int column);

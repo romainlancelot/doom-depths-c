@@ -39,14 +39,20 @@ Monster *create_monster(char *name, int health, int min_attack, int max_attack, 
  * @return A pointer to the newly created Monsters struct.
  * @note The created monsters have random names, health, attack, defense, and speed.
  */
-Monsters *create_random_monster(int count)
+Monsters *create_random_monster(Player *player, int count)
 {
     char *names[] = {"darkangel", "griffon", "grimreaper", "dragon"};
     Monster **monsters = malloc(sizeof(Monster *) * count);
+    int multiplier = (player->stage / player->level) / 2;
     for (int i = 0; i < count; i++)
     {
         char *name = names[rand() % 4];
-        monsters[i] = create_monster(name, rand() % 100, rand() % 10, rand() % 20, rand() % 10);
+        // monsters[i] = create_monster(name, rand() % 100, rand() % 10, rand() % 20, rand() % 10);
+        int health = rand() % 100 + 100 * multiplier;
+        int min_attack = rand() % 10 + 1 * multiplier;
+        int max_attack = min_attack + rand() % 10 + 1;
+        int defense = rand() % 10 + 10 * multiplier;
+        monsters[i] = create_monster(name, health, min_attack, max_attack, defense);
     }
 
     Monsters *monsters_list = malloc(sizeof(Monsters));
@@ -68,7 +74,7 @@ Monsters *create_random_champion(int count)
     Monster **monsters = malloc(sizeof(Monster *) * count);
     for (int i = 0; i < count; i++)
     {
-        char *name = names[rand() % 1];
+        char *name = names[rand() % 2];
         monsters[i] = create_monster(name, rand() % 300, rand() % 25, rand() % 50, rand() % 20);
     }
 

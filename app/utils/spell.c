@@ -152,7 +152,7 @@ void print_spell_list(Spells *spells)
     printf("\n%d - Back\n", spells->count + 1);
 }
 
-void manage_spell_choice(Spells *spells, Monsters *monsters, Player *player)
+void manage_spell_choice(Spells *spells, Monsters *monsters, Player *player, bool *print_entities)
 {
     // Reads user input to select a monster to attack.
     char user_input;
@@ -185,7 +185,7 @@ void manage_spell_choice(Spells *spells, Monsters *monsters, Player *player)
                     return;
                 }
                 // Attacks the selected monster.
-                manage_spell_casting(spell, monsters, player);
+                manage_spell_casting(spell, monsters, player, print_entities);
                 break;
             }
         }
@@ -199,7 +199,7 @@ void manage_spell_choice(Spells *spells, Monsters *monsters, Player *player)
  * @param player
  * @note Deplete player mana and do the calculation of the spell
  */
-void manage_spell_casting(Spell *spell, Monsters *monsters, Player *player)
+void manage_spell_casting(Spell *spell, Monsters *monsters, Player *player, bool *print_entities)
 {
     GOTO_LOG;
     printf("You used %s for %d points of mana.\n", spell->name, spell->mana_cost);
@@ -207,12 +207,12 @@ void manage_spell_casting(Spell *spell, Monsters *monsters, Player *player)
     switch (spell->type)
     {
     case DAMAGE_AOE:
-        manage_spell_aoe_damage(monsters, spell);
+        manage_spell_aoe_damage(monsters, spell, print_entities);
         break;
     case DAMAGE:
         clear(GAME_MENU_LINE);
         print_monsters_list(monsters);
-        manage_spell_damage(monsters, spell);
+        manage_spell_damage(monsters, spell, print_entities);
         break;
     case HEAL:
         heal_player(player, spell->power);
@@ -231,7 +231,7 @@ void manage_spell_casting(Spell *spell, Monsters *monsters, Player *player)
  * @param monsters The Monsters struct containing the array of monsters.
  * @param spell The Player struct containing the player's information.
  */
-void manage_spell_damage(Monsters *monsters, Spell *spell)
+void manage_spell_damage(Monsters *monsters, Spell *spell, bool *print_entities)
 {
     // Reads user input to select a monster to attack.
     char user_input;
@@ -253,9 +253,12 @@ void manage_spell_damage(Monsters *monsters, Spell *spell)
                 if (total_damage < 0)
                     total_damage = 0;
                 monster->current_health -= total_damage;
-                printf("You dealt %d damage to %s !", total_damage, monster->name);
+                printf("You dealt %d damage to %s ! ", total_damage, monster->name);
                 if (monster->current_health <= 0)
+                {
                     remove_monster(monsters, monster);
+                    *print_entities = true;
+                }
                 break;
             }
         }
@@ -268,7 +271,7 @@ void manage_spell_damage(Monsters *monsters, Spell *spell)
  * @param spell
  * @note Manage the AOE damage of spells.
  */
-void manage_spell_aoe_damage(Monsters *monsters, Spell *spell)
+void manage_spell_aoe_damage(Monsters *monsters, Spell *spell, bool *print_entities)
 {
     int damage = spell->power;
     for (int i = 0; i < monsters->count; ++i)
@@ -284,6 +287,7 @@ void manage_spell_aoe_damage(Monsters *monsters, Spell *spell)
         if (monsters->monsters[i]->current_health <= 0)
         {
             remove_monster(monsters, monsters->monsters[i]);
+            *print_entities = true;
             i--;
         }
     }

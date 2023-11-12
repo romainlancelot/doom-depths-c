@@ -103,7 +103,7 @@ choice:
             goto choice;
         }
         player = create_player(player_count + 1);
-        monsters = create_random_monster(rand() % 3 + 1);
+        monsters = create_random_monster(player, rand() % 3 + 1);
         spells = create_random_spell_list(DEFAULT_SPELL_NUMBER);
         break;
     case 9:
@@ -137,36 +137,14 @@ game:
         if(monsters->count < 1){
             player->attack_left = ATTACK_NUMBER;
             player->stage++;
-            GOTO_LOG;
-            printf("\nTravelling to stage %d. ", player->stage);
-            if(rand() % 2){
-                int gold = rand() % 29 + 1;
-                int lost_hp = rand() % 14 + 1;
-                int mana_gain = rand() % 49 + 1;
-                switch (rand() % 3) {
-                    case 0:
-                        printf("You found %d gold on you way to the next stage!", gold);
-                        player->gold += gold;
-                        break;
-                    case 1:
-                        printf("You stumpled on a trap and lost %d HP", lost_hp);
-                        player->current_health -= lost_hp;
-                        break;
-                    case 2:
-                        printf("You stumble accros a mana fountain and gain %d MP", mana_gain);
-                        player->current_mana += mana_gain;
-                        break;
-                }
-            }
-            printf("\nPress a key to continue.");
-            char user_input;
-            if (read(STDIN_FILENO, &user_input, 1) == 1){
-                if(player->stage%5){
-                    monsters = create_random_monster(rand() % 3 + 1);
-                } else{
-                    monsters = create_random_champion(1);
-                }
-            }
+            print_entities = true;
+            CLEAR_SCREEN;
+            handle_win_menu(player);
+            CLEAR_SCREEN;
+            if(player->stage%5)
+                monsters = create_random_monster(player, rand() % 3 + 1);
+            else
+                monsters = create_random_champion(1);
         }
 
         print_player_stats(player);
@@ -212,7 +190,7 @@ game:
             case '5':
                 clear(GAME_MENU_LINE);
                 print_spell_list(spells);
-                manage_spell_choice(spells, monsters, player);
+                manage_spell_choice(spells, monsters, player, &print_entities);
                 break;
             case '8': // End turn
                 if (player->potion_counter != WAIT_FOR_POTION)

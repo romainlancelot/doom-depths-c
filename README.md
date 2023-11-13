@@ -6,8 +6,18 @@ Project made for the ESGI C pool. This is the remake of the game Doomdepths in C
 
 <h1>Table of contents</h1>
 
+- [Contributors](#contributors)
 - [Installation](#installation)
 - [How to play](#how-to-play)
+
+# Contributors
+
+List of contributors to the project:
+
+- [Jordan DUFRESNE](https://github.com/jordan95v)
+- [Kyllian MAIGNAN](https://github.com/kyllianmgn)
+- [Romain LANCELOT](https://github.com/romainlancelot)
+
 
 # Installation
 
